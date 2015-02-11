@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Blog";
+    Layout = null;
+}
+
+<div ng-app="app" ng-controller="BlogController">
+    <div class=" row">
+        <div class="col-xs-12"> 
+            <table class="col-xs-12" id="blogTable">
+                <thead>
+                    <tr><th></th></tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="blog in blogs">
+                        <td>
+                            <div class="row box box-info col-xs-12" style=" margin-top: 10px; padding: 20px">
+                                <div class="box-success" style="margin: 20px; float:left; background-color: #f0f0f0; border-radius: 10px; padding: 10px;">
+                                    <center>
+                                        <p style="align-content: center"><b>{{blog.CreatedByName}}</b></p>
+                                        <img src="{{blog.ImgUrl}}" class="img-circle" style="width: 70px; height: 70px; margin: auto" /><br />
+                                    </center>
+                                </div>
+                                <h3><u>{{blog.MessageLead}}</u></h3>
+                                <h5 style="position: center">Posted: {{blog.DatePostedString}} </h5>
+                                <div ng-bind-html="blog.Message"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+ <script>
+     $(function () {
+         $('#blogTables').dataTable({
+             bSort: false,
+             bFilter: false,
+             bPaginate: false
+         });
+
+     });
+</script>  

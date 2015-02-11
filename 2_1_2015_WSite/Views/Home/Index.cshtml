@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div>
+    <center>
+        <img src="~/Content/images/slm1.png" />
+    </center>
+    
+</div>
+
+<div class="row">
+    <div class="col-xs-8">
+
+        @{Html.RenderAction("Blog", "Communication");}
+
+
+    </div>
+ 
+    <div class="col-xs-4">
+        <div class="row box box-info" style="margin-top: 13px; padding: 20px">
+            <div class="box-success" style="margin: 20px; float:left; background-color: #f0f0f0; border-radius: 10px; padding: 10px;">
+                <center>
+                    <h3 style="align-content: center">Sign Up For Our Newsletter</h3>
+                    <form action="~/User/Subscribe" method="post">
+                        <div class="form-group">
+                            <label for="firstname">First Name: </label>
+                            <input class="form-control" type="text" id="firstname" name="firstName"><br>                           
+                            <label for="firstname">Last Name: </label>
+                            <input class="form-control" type="text" id="lastname" name="lastName"><br>
+                            <label for="eMail">Email Address: </label>
+                            <input class="form-control" type="text" id="eMail" name="eMail"><br>
+                            <input type="submit" class="btn btn-info" value="Submit Form" />
+                        </div>
+                    </form>
+
+                </center>
+            </div>
+ 
+        </div>
+        <div class="row box box-info" style="margin-top: 13px; padding: 20px">
+            <div class="box-success" style="margin: 20px; float:left; background-color: #f0f0f0; border-radius: 10px; padding: 10px;">
+                <center>
+                    
+                    <div id="note_from_the_universe">
+                    <script language="javascript" src="http://www.tut.com/resources/notes/random.js"></script></div>
+
+
+                </center>
+            </div>
+
+        </div>
+    </div>
+</div>

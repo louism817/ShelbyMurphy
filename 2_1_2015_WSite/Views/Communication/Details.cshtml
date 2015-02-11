@@ -1,0 +1,23 @@
+﻿@model _2_1_2015_WSite.Models.CommunicationViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="row box box-info" style="margin-top: 10px; padding: 20px">
+    <h2>Details</h2>
+    <div class="box-success" style="margin: 20px; float:left; background-color: #f0f0f0; border-radius: 10px; padding: 10px;">
+        <center>
+            <p style="align-content: center"><b>@(Model.CreatedByName)</b></p>
+            <img src="@(Model.ImgUrl)" class="img-circle" style="width: 70px; height: 70px; margin: auto" /><br />
+        </center>
+    </div>
+    <h3><u>@(Model.MessageLead)</u></h3>
+        <label typeof="date">"@(Model.DatePosted)</label>
+    <div>@Html.Raw(Model.Message)</div>
+    
+</div>
+<p>
+    @Html.ActionLink("Done", "Index", null, new { @class = "btn btn-primary btn-xs " })
+
+</p>

@@ -1,0 +1,208 @@
+﻿@model _2_1_2015_WSite.Models.CommunicationListViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@if(User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("New Communication", "Create", null, new { @class = "btn btn-primary btn-xs " })
+    </p>
+}
+else
+{
+    <p>
+        @Html.ActionLink("New Message", "Create", null, new { @class = "btn btn-primary btn-xs " })
+    </p>
+}
+
+
+    @if (Model.CreatedComms.Count > 0)
+    {
+        <div class="row box box-info" style="padding:15px">
+            <h2>Authored Communications</h2>
+
+            <table class="table table-condensed" id="authorComms">
+                <thead>
+                    <tr>
+                        <th>Communication Type</th>
+                        <th>Message Description</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.CreatedComms)
+                    {
+                        <tr>
+                            <td class="col-xs-3">
+                                @(item.CommunicationTypeDesc)
+                            </td>
+                            <td class="col-xs-6">
+                                @(item.MessageLead)
+                                <!--                        @Html.Raw(item.Message) -->
+                            </td>
+                            <td class="col-xs-3">
+                                @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
+                                @Html.ActionLink("Edit", "Edit", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
+                                @if (item.CommunicationTypeDesc == "Email" || item.CommunicationTypeDesc == "Online Chat Message")
+                                {
+                                    @Html.ActionLink("Send", "Send", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Post", "PostComm", new { id = item.CommunicationId, creatorId = item.CreatedById }, new { @class = "btn btn-default btn-xs " })
+                                }
+                                @Html.ActionLink("Delete", "Delete", new { id = item.CommunicationId }, new { @class = "btn btn-danger btn-xs " })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+
+
+    @if (Model.SentComms.Count > 0)
+    {
+        <div class="row box box-info" style="padding:15px">
+            <h2>Sent Communications</h2>
+            <table class="table table-condensed" id="sentComms">
+                <thead>
+                    <tr>
+                        <th>Communication Type</th>
+                        <th>Message</th>
+                        <th>Sent To</th>
+                        <th>Sent On</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.SentComms)
+                    {
+                        <tr>
+                            <td class="col-xs-2">
+                                @(item.CommunicationTypeDesc)
+                            </td>
+                            <td class="col-xs-3">
+                                @(item.MessageLead)
+                                <!--                        @Html.Raw(item.Message) -->
+                            </td>
+                            <td class="col-xs-3">
+                                @if (item.ImgUrl != null && item.ImgUrl != "")
+                                {
+                                    <img src="@(item.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
+                                }
+                                @(item.SentToName)
+
+                            </td>
+                            <td class="col-xs-2">
+                                @(item.DatePosted)
+                            </td>
+                            <td class="col-xs-2">
+                                @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+
+
+    @if (Model.ReceivedComms.Count > 0)
+    {
+        <div class="row box box-info" style="padding:15px">
+            <h2>Recieved Communications</h2>
+            <table class="table table-condensed" id="receivedComms">
+                <thead>
+                    <tr>
+                        <th>Communication Type</th>
+                        <th>Message</th>
+                        <th>Recieved From</th>
+                        <th>Recieved On</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.ReceivedComms)
+                    {
+                        <tr>
+                            <td class="col-xs-2">
+                                @(item.CommunicationTypeDesc)
+                            </td>
+                            <td class="col-xs-3">
+                                @(item.MessageLead)
+                                <!--                        @Html.Raw(item.Message) -->
+                            </td>
+                            <td class="col-xs-3">
+                                @if (item.ImgUrl != null && item.ImgUrl != "")
+                                {
+                                    <img src="@(item.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
+                                }
+                                @(item.CreatedByName)
+                            </td>
+                            <td class="col-xs-2">
+                                @(item.DatePosted)
+                            </td>
+                            <td class="col-xs-2">
+                                @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+
+
+    @if (Model.PostedComms.Count > 0)
+    {
+        <div class="row box box-info" style="padding:15px">
+            <h2>Posted Communications</h2>
+            <table class="table table-condensed" id="receivedComms">
+                <thead>
+                    <tr>
+                        <th>Communication Type</th>
+                        <th>Message</th>
+                        <th>Posted On</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.PostedComms)
+                    {
+                        <tr>
+                            <td class="col-xs-2">
+                                @(item.CommunicationTypeDesc)
+                            </td>
+                            <td class="col-xs-6">
+                                @(item.MessageLead)
+                                <!--                        @Html.Raw(item.Message) -->
+                            </td>
+                            <td class="col-xs-2">
+                                @(item.DatePosted)
+                            </td>
+                            <td class="col-xs-2">
+                                @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+
+<script>
+    $(function () {
+        $('#authorComms').dataTable();
+ 
+    });
+</script>

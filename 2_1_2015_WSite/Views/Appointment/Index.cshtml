@@ -1,0 +1,50 @@
+﻿@model List<_2_1_2015_WSite.Models.AppointmentUserViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+   <p> @Html.ActionLink("Create Appointment", "CreateUpdate", null, new { @class = "btn btn-primary btn-xs " }) </p>
+    <div class="row box box-info" style="padding: 15px">
+        <h2>Appointments</h2> 
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>With</th>
+                        <th>Date</th>
+                        <th>Time Frame</th>
+                        <th>Type</th>
+                        <th>Reason</th>
+                        <th>Accepted</th>
+                        <th>Operations</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var appt in Model)
+                    {
+                        <tr>
+                            <td class="col-xs-2">
+                                @if (appt.User.ImgUrl != null && appt.User.ImgUrl != "")
+                                {
+                                    <img src="@(appt.User.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
+                                }
+                                @appt.User.DisplayName
+                            </td>
+                            <td class="col-xs-1">@appt.Appointment.Date.ToShortDateString()</td>
+                            <td classs="col-xs-1">@appt.Appointment.ApptTimeFrame.ApptTimeFrameDesc</td>
+                            <td class="col-xs-1">@appt.Appointment.ApptType.ApptTypeDesc</td>
+                            <td class="col-xs-3">@appt.Appointment.Reason</td>
+                            <td class="col-xs-1">@(appt.Appointment.Accepted ?  "Yes" : "Not Yet" )</td>
+                            <td class="col-xs-3">
+                                @(Html.ActionLink("Edit/View Appointment", "CreateUpdate", new { id = appt.ApptUserId }, new { @class = "btn btn-default btn-xs " }))
+                                @(Html.ActionLink("Delete Appointment", "Delete", new { id = appt.ApptUserId }, new { @class = "btn btn-danger btn-xs  " }))
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+       
+        </div>
+
+
+
+

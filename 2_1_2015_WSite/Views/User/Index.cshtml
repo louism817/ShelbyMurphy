@@ -1,0 +1,154 @@
+﻿@using _2_1_2015_WSite.Models
+@model UsersListsViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+@if (Model.Admins.Count > 0)
+{
+       
+        <div class="row box box-info"  style="padding: 15px">
+            <h2>Admins</h2>
+            <table class="table table-condensed" id="adminTable">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model.Admins)
+                    {
+                        <tr>
+                            <td class="col-xs-3">
+                                @if (u.ImgUrl != null && u.ImgUrl != "")
+                                {
+                                    <img src="@(u.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
+                                }
+                                @(u.FirstName + " " + u.LastName)
+                            </td>
+                            <td class="col-xs-3">@u.Email</td>
+                            <td class="col-xs-3">@u.DisplayName</td>
+                            <td class="col-xs-3">
+                                @(Html.ActionLink("Edit Admin", "AddUpdate", new { userId = u.UserId }, new { @class = "btn btn-default btn-xs " }))
+                                @(Html.ActionLink("Delete Admin", "Delete", new { userId = u.UserId }, new { @class = "btn btn-danger btn-xs " }))
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+}
+@if (Model.Clients.Count > 0)
+{
+    <div class="row box box-info"  style=" padding: 15px">
+        <h2>Clients</h2>
+ 
+        <table table class="table table-condensed" id="clientTable">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Operations</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model.Clients)
+                    {
+                    <tr>
+                        <td class="col-xs-3">
+                            @if (u.ImgUrl != null && u.ImgUrl != "")
+                            {
+                                <img src="@(u.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
+                            }
+                            @(u.FirstName + " " + u.LastName)
+                        </td>
+                        <td class="col-xs-3">@u.Email</td>
+                        <td class="col-xs-3">@u.DisplayName</td>
+                        <td class="col-xs-3">
+                            @(Html.ActionLink("Edit Client", "AddUpdate", new { userId = u.UserId }, new { @class = "btn btn-default btn-xs " }))
+                            @(Html.ActionLink("Delete Client", "Delete", new { userId = u.UserId }, new { @class = "btn btn-danger btn-xs " }))
+                        </td>
+
+                    </tr>
+
+                    }
+            </tbody>
+        </table>
+
+    </div>
+}
+@if (Model.Generals.Count > 0)
+{
+    <div class="row box box-info"  style=" padding: 15px">
+        <h2>General Users</h2>
+
+        <table table class="table table-condensed" id="usersTable">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Operations</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model.Generals)
+                {
+                    <tr>
+                        <td class="col-xs-3">
+                            @if (u.ImgUrl != null && u.ImgUrl != "")
+                            {
+                                <img src="@(u.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
+                            }
+                            @(u.FirstName + " " + u.LastName)
+                        </td>
+                        <td class="col-xs-3">@u.Email</td>
+                        <td class="col-xs-3">@u.DisplayName</td>
+                        <td class="col-xs-3">
+                            @(Html.ActionLink("Edit User", "AddUpdate", new { userId = u.UserId }, new { @class = "btn btn-default btn-xs " }))
+                            @(Html.ActionLink("Delete User", "Delete", new { userId = u.UserId }, new { @class = "btn btn-danger btn-xs " }))
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+
+    </div>
+}
+@if (User.IsInRole("Admin"))
+{
+    <div class="col-md-12 column">
+        @(Html.ActionLink("Add User", "AddUpdate", null, new { @class = "btn btn-primary" }))
+    </div>
+}
+
+
+
+
+
+
+@section Scripts {
+
+    <script>
+
+            $(function () {
+
+
+                $('#usersTable').dataTable();
+                $('#adminTable').dataTable();
+                $('#clientTable').dataTable();
+            });
+
+
+    </script>>
+}
