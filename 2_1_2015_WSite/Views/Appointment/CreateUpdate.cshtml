@@ -17,13 +17,27 @@
                 <input id="date" class="datepicker datepicker-dropdown datepicker-days" name="reqDate" value="@Model.Date.ToShortDateString()" data-format="ShortDateTime" />
                 <input id="date" data-date-icon="icon-calendar" class="datepicker datepicker-dropdown datepicker-days" name="reqDate" value="@Model.Date.ToShortDateString()" placeholder="@Model.Date.ToShortDateString()" />
                 @Html.DisplayFor(a => a.Date, "ShortDateTime", new { @class = "form-control", @id="date"})
+                @Html.TextBoxFor(a => a.Date, @Model.Date.ToShortDateString(), new { @class = "input-append form-control", @id = "date"})
 
 -->
             <div class="form-group">
                 @Html.LabelFor(a => a.Date)
                 @Html.TextBoxFor(a => a.Date, @Model.Date.ToShortDateString(), new { @class = "form-control", @id = "date"})
             </div>
-            
+
+        <div class="form-group">
+            @Html.LabelFor(a => a.Date)
+            @Html.TextBoxFor(a => a.Date, @Model.Date.ToShortDateString(), new { @class = "iput-append date add-on glyphicon glyphicon-calendar form-control", @id = "dp2" })
+            <span class="add-on glyphicon glyphicon-calendar"></span>
+        </div>
+
+    <div class="form-group">
+        <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+            <input class="span2" size="16" type="text" value="12-02-2012" readonly>
+            <span class="add-on glyphicon glyphicon-calendar"></span>
+        </div>
+    </div>
+
             <div class="form-group">
                 @Html.LabelFor(a => a.ApptTimeFrame)
                 @Html.DropDownListFor(a => a.ApptTimeFrame.ApptTimeFrameId, new SelectList(Model.ApptTimeFrames, "ApptTimeFrameId", "ApptTimeFrameDesc"), "-Select Appointment Type-", new { @class = "form-control" })
@@ -130,7 +144,7 @@
 <script src="~/Scripts/bootstrap-datepicker.js"></script>
 <script>
     $(function () {
-        $('#date').datepicker({
+        $('#date, #dp2, #dp3').datepicker({        
             format: 'mm/dd/yyyy',
             language: 'en',
             todayBtn: "linked"
