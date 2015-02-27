@@ -15,8 +15,8 @@ namespace _2_1_2015_WSite.Models
         public static string Body { get; set; }
 
         private static SmtpClient _client;
-        private static readonly string UserName = ""; // enter username
-        private static readonly string Password = "";// enter passowrd
+        private static readonly string UserName = "usernamehere"; // enter username
+        private static readonly string Password = "passwordhere";// enter passowrd
         private static readonly int Port = 587;
         private static readonly string Host = "smtp.gmail.com";
 
