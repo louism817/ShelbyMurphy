@@ -12,18 +12,11 @@
         <h2>Request/Update Appointment</h2>
         @using (Html.BeginForm())
         {
-            <!--
-            <input id="date" class="datepicker datepicker-dropdown datepicker-days" name="reqDate" value="@Model.Date"/>
-                <input id="date" class="datepicker datepicker-dropdown datepicker-days" name="reqDate" value="@Model.Date.ToShortDateString()" data-format="ShortDateTime" />
-                <input id="date" data-date-icon="icon-calendar" class="datepicker datepicker-dropdown datepicker-days" name="reqDate" value="@Model.Date.ToShortDateString()" placeholder="@Model.Date.ToShortDateString()" />
-                @Html.DisplayFor(a => a.Date, "ShortDateTime", new { @class = "form-control", @id="date"})
-                @Html.TextBoxFor(a => a.Date, @Model.Date.ToShortDateString(), new { @class = "input-append form-control", @id = "date"})
 
--->
-            <div class="form-group">
-                @Html.LabelFor(a => a.Date)
-                @Html.TextBoxFor(a => a.Date, @Model.Date.ToShortDateString(), new { @class = "form-control", @id = "date"})
-            </div>
+        <div class="form-group">
+            @Html.LabelFor(a => a.Date)
+            @Html.TextBoxFor(a => a.Date, @Model.Date.ToShortDateString(), new { @class = "form-control", @id = "date"})
+        </div>
 
         <div class="form-group">
             @Html.LabelFor(a => a.Date)
@@ -31,12 +24,12 @@
             <span class="add-on glyphicon glyphicon-calendar"></span>
         </div>
 
-    <div class="form-group">
-        <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-            <input class="span2" size="16" type="text" value="12-02-2012" readonly>
-            <span class="add-on glyphicon glyphicon-calendar"></span>
+        <div class="form-group">
+            <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+                <input class="span2" size="16" type="text" value="12-02-2012" readonly>
+                <span class="add-on glyphicon glyphicon-calendar"></span>
+            </div>
         </div>
-    </div>
 
             <div class="form-group">
                 @Html.LabelFor(a => a.ApptTimeFrame)
@@ -71,70 +64,8 @@
  	 	 	 	 	@Html.LabelFor(	a => a.Accepted)
  	 	 	 	 	@Html.CheckBoxFor(a => a.Accepted, new { @class = "form-control", @readonly = "readonly" })
                 </div>
-            }
-
-            
-
-
-            <!--
-            <div class="form-group">
-                <label>Current Appt: @Model.Date</label>
-            </div>
-                
-             <div class="form-group">
-                <label for="reqDate">Select Date</label>
-                <input type="date" name="reqDate" value="@Model.Date"/>                
-             </div>
-
-            <div class="form-group">
-                <label for="reason" >Reason For Meeting</label>
-                <input type="text" name="reason" class="form-control" value="@Model.Reason"/>
-              </div>
-
-            <div class="form-group">
-                <label for="apptTypeId">Select Appointment Type</label>                
-                <select name="apptTypeId" class="form-control" value="@Model.ApptType.ApptTypeId">
-                    @foreach (var a in Model.ApptTypes)
-                    {
-                        <option value=@(a.ApptTypeId)>@(a.ApptTypeDesc)</option>
-                    }
-                </select>               
-                @Html.ValidationMessageFor(a => a.ApptType.ApptTypeId, "", new { @class = "text-danger" })
-            </div>
-            <div class="form-group">
-                <label for="apptTimeFrameId">Select Appointment Time of Day</label>
-                <select name="apptTimeFrameId" class="form-control" value="@Model.ApptTimeFrame.ApptTimeFrameId">
-                    @foreach (var a in Model.ApptTimeFrames)
-                    {
-                        <option value=@(a.ApptTimeFrameId)>@(a.ApptTimeFrameDesc)</option>
-                    }
-                </select>
-                @Html.ValidationMessageFor(a => a.ApptTimeFrame.ApptTimeFrameId, "", new { @class = "text-danger" })
-            </div>
-
-            if (User.IsInRole("Admin") && Model.AppointmentId > 0)
-            {
-                <div class="form-group">
-                    <label for="accepted">Appointment Accepted</label>
-                    <input type="text" name="accepted" class="form-control" value="@Model.Accepted" />
-                </div>
-            }
-            else
-            {
-                <div class="form-group">
-                    <label for="accepted">Appointment Accepted</label>
-                    <input type="text" name="accepted" class="form-control" value="@Model.Accepted" readonly />
-                </div>
             }        
-    
 
-            <input type="hidden" name="reqDate" />
-            <input type="hidden" name="reason" />
-            <input type="hidden" name="accepted" />
-            <input type="hidden"  name="apptTypeId" />
-            <input type="hidden"  name="apptTimeFrameId" />
-   -->           
-            
             <input type="hidden" value="@Model.AppointmentId" name="id" />
             <input type="submit" class="btn btn-primary" value="Request/Update Appointment" />
         }
