@@ -7,6 +7,20 @@ using System.Web.Mvc;
 
 namespace _2_1_2015_WSite.Models
 {
+    public enum ElementTypes{
+        About = 0,
+        Contact = 1,
+        Header = 2
+    }
+
+    public class ElementViewModel
+    {
+        public int ElementId { get; set; }
+        [UIHint("tinymce_full"), AllowHtml]
+        public string ElementBody { get; set; }
+        public int ElementType { get; set; }
+    }
+
     public class UsersListsViewModel
     {
         public List<UserViewModel> Admins { get; set; }
@@ -24,16 +38,21 @@ namespace _2_1_2015_WSite.Models
     {
         public string UserId { get; set; }
         [Required]
+        [Display(Name ="First Name")]
         public string FirstName { get; set; }
         [Required]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
         [Required]
         public string Email { get; set; }
+        [Display(Name = "Display Name")]
         public string DisplayName { get; set; }
+        [Display(Name = "Image Url")]
         public string ImgUrl { get; set; }
         public string Role { get; set; }
         public List<string> Roles { get; set; }
         public string AssignCoachId { get; set; }
+        [Display(Name = "Assigned Coach")]
         public CoachViewModel AssignedCoach { get; set; }
         public List<CoachViewModel> Coaches { get; set; }
 
@@ -79,19 +98,22 @@ namespace _2_1_2015_WSite.Models
 
     public class CommunicationListViewModel
     {
+        public string CommType { get; set; }
+        public List<CommunicationViewModel> Comms { get; set; }
         public List<CommunicationViewModel> CreatedComms { get; set; }
         public List<CommunicationViewModel> SentComms { get; set; }
         public List<CommunicationViewModel> ReceivedComms { get; set; }
         public List<CommunicationViewModel> PostedComms { get; set; }
     }
 
-    public class BlogAngularViewModel
+    public class BlogViewModel
     {
+        public int BlogId { get; set;  }
         public string Message { get; set; }
         public string MessageTitle { get; set; }
         public string MessageLead { get; set; }
         public string CreatedByName { get; set; }
-        public DateTime DatePosted { get; set; }
+        public DateTime? DatePosted { get; set; }
         public string DatePostedString { get; set; }
         public string ImgUrl { get; set; }
     }
@@ -118,7 +140,13 @@ namespace _2_1_2015_WSite.Models
         public string ImgUrl { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateLastEdited { get; set; }
-        public DateTime DatePosted { get; set; } 
+        public DateTime? DatePosted { get; set; }
+        [Display(Name = "Date to publish - only used for announcements.")]
+        public DateTime? PubDate { get; set; }
+        [Display(Name = "Date to unpublish - only used for announcements.")]
+        public DateTime? UnPubDate { get; set; }
+        public bool Published { get; set; }
+        public bool  Deleted { get; set; }
         public int CommunicationTypeId { get; set; }
         public string CommunicationTypeDesc { get; set; }
         public List<CommunicationTypeViewModel> CommunicationTypes { get; set; }

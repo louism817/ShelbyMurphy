@@ -4,16 +4,20 @@
     ViewBag.Title = "Details";
 }
 
-<div class="row box box-info" style="margin-top: 10px; padding: 20px">
-    <h2>Details</h2>
-    <div class="box-success" style="margin: 20px; float:left; background-color: #f0f0f0; border-radius: 10px; padding: 10px;">
-        <center>
-            <p style="align-content: center"><b>@(Model.CreatedByName)</b></p>
-            <img src="@(Model.ImgUrl)" class="img-circle" style="width: 70px; height: 70px; margin: auto" /><br />
-        </center>
-    </div>
-    <h3><u>@(Model.MessageLead)</u></h3>
-        <label typeof="date">"@(Model.DatePosted)</label>
+<div class="row box-outer">
+    @if (Model.CommunicationTypeDesc == "Blog Post")
+    {
+        <h2>Details</h2>
+        <div class="blog-author">
+            <center>
+                <p style="align-content: center"><b>@(Model.CreatedByName)</b></p>
+                <img src="@(Model.ImgUrl)" /><br />
+            </center>
+        </div>
+        <h3><u>@Model.MessageTitle</u></h3>
+        <h5 style="position: center">Posted: @Model.DatePosted.ToString() </h5>
+    }
+    
     <div>@Html.Raw(Model.Message)</div>
     
 </div>

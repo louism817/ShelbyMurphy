@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Data.Entity.Migrations;
+using System.Diagnostics;
 
 namespace _2_1_2015_WSite.Adapters.DataAdapters
 {
@@ -32,15 +33,15 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
         private List<CoachViewModel> HydrateCoaches()
         {
             List<CoachViewModel> models = new List<CoachViewModel>();
-            
+
             List<UserViewModel> coaches = HydrateUsersByRole("Admin");
-            foreach(UserViewModel coach in coaches)
+            foreach (UserViewModel coach in coaches)
             {
                 CoachViewModel model = new CoachViewModel()
                 {
                     Email = coach.Email,
                     UserId = coach.UserId,
-                    DisplayName = coach.FirstName + " " + coach.LastName                     
+                    DisplayName = coach.FirstName + " " + coach.LastName
                 };
                 models.Add(model);
             }
@@ -50,10 +51,10 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
         private CoachViewModel FindAssignedCoach(string id)
         {
             CoachViewModel coach = null;
-            using(ApplicationDbContext db = new ApplicationDbContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 ClientCoach clientCoach = db.ClientCoachs.FirstOrDefault(c => c.ClientId == id);
-                if(clientCoach != null)
+                if (clientCoach != null)
                 {
                     coach = new CoachViewModel()
                     {
@@ -63,7 +64,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                     };
                 }
             }
-            if(coach == null) // may not be a coach assigned but need valid coach object
+            if (coach == null) // may not be a coach assigned but need valid coach object
             {
                 coach = new CoachViewModel();
             }
@@ -79,7 +80,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                 UserManager<ApplicationUser> userManager = new UserManager<ApplicationUser>(userStore);
 
                 userRole = userManager.IsInRole(dbUser.Id, "Admin") ? "Admin" : userManager.IsInRole(dbUser.Id, "Client") ? "Client" : "General";
-            }  
+            }
 
             UserViewModel user = new UserViewModel();
             user.LastName = dbUser.LastName;
@@ -94,18 +95,18 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
             return user;
         }
 
-        public void AssignCoach(UserViewModel model, string userId="")
+        public void AssignCoach(UserViewModel model, string userId = "")
         {
-            if(model == null || userId == "")
+            if (model == null || userId == "")
             {
                 return;
             }
-            using(ApplicationDbContext db = new ApplicationDbContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
-                ClientCoach clientCoach = new ClientCoach() 
+                ClientCoach clientCoach = new ClientCoach()
                 {
-                     CoachId = model.AssignCoachId,
-                     ClientId = userId
+                    CoachId = model.AssignCoachId,
+                    ClientId = userId
                 };
                 db.ClientCoachs.Add(clientCoach);
                 db.SaveChanges();
@@ -178,7 +179,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
 
                 }
             }
-            if(model == null)
+            if (model == null)
             {
                 model = new UserViewModel();
             }
@@ -189,14 +190,14 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
         public string GetUserIdFromName(string userName = "")
         {
             string id = "";
-            if(userName == "")
+            if (userName == "")
             {
                 return id;
             }
-            using(ApplicationDbContext db = new ApplicationDbContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 ApplicationUser user = db.Users.FirstOrDefault(u => u.UserName == userName);
-                if(user != null)
+                if (user != null)
                 {
                     id = user.Id;
                 }
@@ -216,11 +217,11 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                     {
                         model = HydrateUserViewModel(user);
                         model.Coaches = HydrateCoaches();// hydrate coaches for assignment
-                     }
+                    }
 
                 }
             }
-            if(model == null)
+            if (model == null)
             {
                 model = new UserViewModel();
             }
@@ -237,7 +238,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                 UserStore<ApplicationUser> userStore = new UserStore<ApplicationUser>(db);
                 UserManager<ApplicationUser> userManager = new UserManager<ApplicationUser>(userStore);
                 ApplicationUser user = null;
-                
+
                 if (userId != null) // userName passed in so update existing user
                 {
                     user = db.Users.FirstOrDefault(u => u.Id == userId);
@@ -273,7 +274,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                     userManager.AddToRole(user.Id, model.Role);
                     user = userManager.FindByName(user.UserName);
 
-                    message = "NewOk";                   
+                    message = "NewOk";
 
                 }
                 try
@@ -302,9 +303,9 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                 ApplicationUser user = db.Users.FirstOrDefault(u => u.Id == userId);
                 if (user != null)
                 {
- 
+
                     bool allowDelete = true;
- 
+
                     List<CommSentTo> commSents = db.CommSentTos.ToList();
                     foreach (CommSentTo commSent in commSents)
                     {
@@ -314,7 +315,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                             break;
                         }
                     }
-                    if(allowDelete)
+                    if (allowDelete)
                     {
                         List<CommPost> commPosts = db.CommPosts.ToList();
                         foreach (CommPost commPost in commPosts)
@@ -359,8 +360,8 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                         string role = userManager.IsInRole(user.Id, "Admin") ? "Admin" : userManager.IsInRole(user.Id, "Client") ? "Client" : "General";
                         userManager.RemoveFromRole(user.Id, role);
                         userManager.Delete(user);
-                    }                    
-                 }
+                    }
+                }
 
                 try
                 {
@@ -375,7 +376,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
             }
         }
 
-        public void AddNLSubscribrer(string firstName="", string lastName="", string eMail="")
+        public void AddNLSubscribrer(string firstName = "", string lastName = "", string eMail = "")
         {
             if (firstName == "" || lastName == "" || eMail == "")
             {
@@ -442,11 +443,11 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
             }
             return model;
         }
-        public AppointmentViewModel GetAppointmentById(int id=0)
+        public AppointmentViewModel GetAppointmentById(int id = 0)
         {
             AppointmentViewModel model = null;
- 
-            if(id > 0) // get eisting appointment
+
+            if (id > 0) // get eisting appointment
             {
                 using (ApplicationDbContext db = new ApplicationDbContext())
                 {
@@ -470,7 +471,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                     };
                 }
             }
-           
+
             // If things went very wrong, and we still dont' have a model make one now.
             if (model == null || id == 0)
             {
@@ -515,15 +516,16 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
         public List<AppointmentUserViewModel> GetAppointmentUsers(string userId)
         {
             List<AppointmentUserViewModel> model = null;
-            using(ApplicationDbContext db = new ApplicationDbContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 model = db.AppointmentUsers.Where(au => au.UserId == userId).Select(au => new AppointmentUserViewModel()
                 {
                     ApptUserId = au.AppointmentUserId,
                     Appointment = new AppointmentViewModel()
-                    {                        
+                    {
                         Accepted = au.Appointment.Accepted,
-                        ApptTimeFrame = new ApptTimeFrameViewModel() {
+                        ApptTimeFrame = new ApptTimeFrameViewModel()
+                        {
                             ApptTimeFrameId = au.Appointment.TimeFrame.ApptTimeFrameId,
                             ApptTimeFrameDesc = au.Appointment.TimeFrame.ApptTimeFrameDesc
                         },
@@ -536,7 +538,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                         Date = au.Appointment.Date,
                         Reason = au.Appointment.Reason
                     },
-                    User = new UserViewModel() 
+                    User = new UserViewModel()
                     {
                         FirstName = au.User.FirstName,
                         LastName = au.User.LastName,
@@ -545,15 +547,15 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                         UserId = au.User.Id,
                         ImgUrl = au.User.ImgUrl,
                     },
-                }).ToList();                
+                }).ToList();
             }
-            if(model == null)
+            if (model == null)
             {
                 model = new List<AppointmentUserViewModel>();
             }
             else // put in values we could not do in linq above
             {
-                foreach(AppointmentUserViewModel apt in model)
+                foreach (AppointmentUserViewModel apt in model)
                 {
                     apt.Appointment.ApptTimeFrames = HydrateApptTimeFrames();
                     apt.Appointment.ApptTypes = HydrateAppTypes();
@@ -568,7 +570,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
         // In order to create an appointment:
         // 1. Create appointment and get the newly created appointmentId
         // 2. Create entry in AppointmentUsers table
-        public void CreateUpdateAppointment(AppointmentViewModel model, string userName = "", int id=0)
+        public void CreateUpdateAppointment(AppointmentViewModel model, string userName = "", int id = 0)
         {
             if (userName == "")
             {
@@ -581,25 +583,25 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                 UserViewModel userModel = GetUserByUserName(userName);
                 Appointment appointment = null;
                 // If we have an Id != 0 we are updating, get that and update it rather than create
-                if(id != 0)
+                if (id != 0)
                 {
                     appointment = db.Appointments.FirstOrDefault(a => a.AppointmentId == id);
                 }
                 // We didn't have an id, so we are creating, or we could not find the id
-                if(id == 0)
+                if (id == 0)
                 {
                     // first we need to 
                     appointment = new Appointment();
                 }
                 // if appointment.accepted == false and model.accepted == true send email that appt has been accepted
-                if(!appointment.Accepted && model.Accepted && id > 0)
+                if (!appointment.Accepted && model.Accepted && id > 0)
                 {
                     // Need to get apptuser to get users email
                     List<UserViewModel> apptUsers = db.AppointmentUsers.Where(a => a.AppointmentId == id).Select(u => new UserViewModel()
                     {
-                    Email = u.User.Email,
-                    FirstName = u.User.FirstName,
-                    LastName = u.User.LastName
+                        Email = u.User.Email,
+                        FirstName = u.User.FirstName,
+                        LastName = u.User.LastName
                     }).ToList();
                     if (apptUsers.Count > 0)
                     {
@@ -607,21 +609,21 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                         //EmailManager.SendEmailApptRequestAccept(userModel.Email, userModel.FirstName + " " + userModel.LastName, model.Reason);
                         EmailManager.SendEmailApptRequestAccept(user.Email, user.FirstName + " " + user.LastName, model.Reason);
                     }
-                    
+
                 }
                 appointment.Accepted = model.Accepted;// false; // Will have to be accepted by admin to change to true
                 appointment.ApptTypeId = model.ApptType.ApptTypeId;
                 appointment.AppTimeFrameId = model.ApptTimeFrame.ApptTimeFrameId;
                 appointment.Reason = model.Reason;
-                appointment.Date = model.Date; 
+                appointment.Date = model.Date;
 
-                if(id == 0) // creating so need to add first
+                if (id == 0) // creating so need to add first
                 {
                     appointment = db.Appointments.Add(appointment);
                 }
-                
+
                 db.SaveChanges();
-                if(id == 0)// Only need to add apptUser entry if this is a create, not an edit
+                if (id == 0)// Only need to add apptUser entry if this is a create, not an edit
                 {
                     AppointmentUser apptUser = new AppointmentUser()
                     {
@@ -632,70 +634,347 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                     db.SaveChanges();
                     EmailManager.SendEmailApptRequest(userModel.Email, userModel.FirstName + " " + userModel.LastName, model.Reason);
                 }
-                    
+
             }
             return;
         }
 
         // Find all appts in appt
-        public void DeleteAppointment(int id=0)
+        public void DeleteAppointment(int id = 0)
         {
-            if(id == 0){// we shouldn't get in here with a 0 id
+            if (id == 0)
+            {// we shouldn't get in here with a 0 id
                 return;
             }
-            using(ApplicationDbContext db = new ApplicationDbContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 // find list of AppointmentUsers for this appointment, and remove them before removing appt
 
                 List<AppointmentUser> apptUsers = db.AppointmentUsers.ToList();
-                if(apptUsers != null)
+                if (apptUsers != null)
                 {
-                    foreach(AppointmentUser aptUser in apptUsers)
+                    foreach (AppointmentUser aptUser in apptUsers)
                     {
                         if (aptUser.AppointmentUserId == id)
                         {
                             db.AppointmentUsers.Remove(aptUser);
-                        }                        
+                        }
                     }
                 }
                 Appointment appt = db.Appointments.FirstOrDefault(a => a.AppointmentId == id);
-                if(appt != null)
+                if (appt != null)
                 {
                     db.Appointments.Remove(appt);
-                }               
+                }
                 db.SaveChanges();
             }
             return;
         }
 
         /******************         Angular          ***********************************/
-        public List<BlogAngularViewModel> GetBlogPostsForAngular()
+
+
+        /*
+        internal static class HtmlExts
         {
-            List<BlogAngularViewModel> model = null;
+            public static bool containsHtmlTag(this string text, string tag)
+            {
+                var pattern = @"<\s*" + tag + @"\s*\/?>";
+                return Regex.IsMatch(text, pattern, RegexOptions.IgnoreCase);
+            }
+
+            public static bool containsHtmlTags(this string text, string tags)
+            {
+                var ba = tags.Split('|').Select(x => new {tag = x, hastag = text.containsHtmlTag(x)}).Where(x => x.hastag);
+
+                return ba.Count() > 0;
+            }
+
+            public static bool containsHtmlTags(this string text)
+            {
+                return
+                    text.containsHtmlTags(
+                        "a|abbr|acronym|address|area|b|base|bdo|big|blockquote|body|br|button|caption|cite|code|col|colgroup|dd|del|dfn|div|dl|DOCTYPE|dt|em|fieldset|form|h1|h2|h3|h4|h5|h6|head|html|hr|i|img|input|ins|kbd|label|legend|li|link|map|meta|noscript|object|ol|optgroup|option|p|param|pre|q|samp|script|select|small|span|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|ul|var");
+            }
+        }
+
+
+        */
+
+        public bool ContainsSelfClosingTag(string word)
+        {
+            return word.IndexOf("/>") >= 0;
+        }
+
+        // If string starts with "<" we are assuming that we are in a html tag
+        public bool ContainsTag(string source)
+        {
+            return source.IndexOf("<") >= 0;
+        }
+
+        public bool EndOfSelfClosingTag(string source)
+        {
+            return source.IndexOf("/>") >= 0;
+        }
+
+        public bool EndOFTag(string source)
+        {
+            return source.IndexOf("</") >= 0;
+        }
+
+        public enum InsideTagType
+        {
+            NoTag = 0,
+            HtmlOpenTag = 1,
+            HtmlCloseTag = 2,
+            SelfClosingTag = 3
+        }
+
+        public int FindOpenTagStart(string source)
+        {
+            return source.IndexOf('<');
+        }
+
+        public int FindTagEnd(string source)
+        {
+            return source.IndexOf('>');
+        }
+
+
+        public int FindCloseTagStart(string source)
+        {
+            return source.IndexOf("</");
+        }
+        public int FindSelfCloseTagEnd(string source)
+        {
+            return source.IndexOf("/>");
+        }
+
+        public InsideTagType InTag(string source)
+        {
+
+            if (!ContainsTag(source))
+            {
+                return InsideTagType.NoTag;
+            }
+            else
+            {
+                var tagStart = FindOpenTagStart(source);
+                //var htmlTagStart = FindOpenTagStart(source);
+                var endSelfTag = FindSelfCloseTagEnd(source);
+                var endHtmlTag = FindTagEnd(source);
+
+                var isSelfClose = endSelfTag >= 0 ? (endHtmlTag >= 0 ? endSelfTag < endHtmlTag : true) : false;
+                if (isSelfClose)
+                    return InsideTagType.SelfClosingTag;
+                else
+                {
+                    var closeHtmlTag = FindCloseTagStart(source);
+
+                    if (closeHtmlTag >= 0 && closeHtmlTag <= tagStart)
+                    {
+                        return InsideTagType.HtmlCloseTag;
+                    }
+                    else
+                    {
+                        return InsideTagType.HtmlOpenTag;
+                    }
+                }
+
+            }
+        }
+
+        public string CreatePreview(string message)
+        {
+            /*
+            We need to know if we are inside an html tag, or a string. If we are inside a string, we don't
+            care about symbols that could be an opening tag. We just need to make sure that if we are in
+            a tag that we get the rest of the tag (assumming that the tag is img or formatting text).
+
+            */
+            const int previewLen = 100;
+            var teaser = "";
+            try
+            {
+                var teaserLen = 0;
+                var sourceStr = message;
+                var tagType = InsideTagType.NoTag;
+                Stack<string> tagStack = new Stack<string>();
+
+                while (teaserLen < previewLen && sourceStr.Count() > 0)
+                {
+                    var tagStart = FindOpenTagStart(sourceStr);
+                    string tempStr = null;
+                    tagType = InTag(sourceStr);
+                    switch (tagType)
+                    {
+                        case InsideTagType.NoTag:
+
+                            // messageWords only has 2 items, the second item can be split now
+                            string[] messageWords = sourceStr.Split(' ');
+                            for (var i = 0; i < messageWords.Count(); i++)
+                            {
+                                teaser += " " + messageWords[i];
+                                teaserLen += messageWords[i].Length;
+
+                                if (teaserLen > previewLen)
+                                    break;
+
+                            }
+                            break;
+                        case InsideTagType.SelfClosingTag:
+                            var tagCloseOffset = FindSelfCloseTagEnd(sourceStr);
+                            // if tag starts before previewLen, copy everything up to and including the tag to preview
+                            if (teaserLen + tagStart <= previewLen)
+                            {
+                                tempStr = sourceStr.Substring(0, tagCloseOffset + 2);
+                                teaser += tempStr;
+                                // advance string beyond end of self closing tag for another iteration
+                                sourceStr = sourceStr.Substring(tagCloseOffset + 2, sourceStr.Count() - tagCloseOffset - 2);
+                                teaserLen += tagStart + 2;
+
+                            }
+                            else // remove everything from start tag on, and iterate
+                            {
+                                sourceStr = sourceStr.Substring(0, tagStart);
+                            }
+
+                            break;
+                        case InsideTagType.HtmlOpenTag:
+                            // Find tag begin, and end. Depending on where they are may or may not need to deal with tag
+
+                            var openTagEnd = FindTagEnd(sourceStr);
+                            var spaceIndex = sourceStr.IndexOf(' ');
+
+                            // get tag and create closing tag to put on stack
+                            tagStack.Push("</" + sourceStr.Substring(tagStart + 1, openTagEnd - tagStart - 1) + ">");
+                            // add all words before tag
+                            //while (spaceIndex > 0 && spaceIndex + teaserLen < previewLen && spaceIndex + teaserLen < tagStart)
+                            var tempTeaserLen = teaserLen;
+
+                            // If tag starts before preview length, copy it onto preview and iterate
+                            if (teaserLen + tagStart < previewLen)
+                            {
+                                teaser += sourceStr.Substring(0, openTagEnd + 1);
+                                teaserLen += tagStart;
+                                sourceStr = sourceStr.Substring(openTagEnd + 1, sourceStr.Count() - openTagEnd - 1);
+                            }
+
+                            //currentTag = sourceStr.Substring(openTagStart, openTagEnd - openTagStart);
+                            else if (teaserLen + tagStart > previewLen)
+                            {
+                                // if tag does not start until after preview length, limit source and let it
+                                // fall through the notag code
+                                sourceStr = sourceStr.Substring(0, tagStart);
+
+                            }
+
+                            break;
+                        case InsideTagType.HtmlCloseTag:
+                            var closeTagStart = FindCloseTagStart(sourceStr);
+                            var closeTagEnd = FindTagEnd(sourceStr);
+                            // is close tag starts before previewLen put in everything
+                            if (teaserLen + closeTagStart < previewLen)
+                            {
+                                var closeTagStr = sourceStr.Substring(0, closeTagEnd + 1);
+                                teaser += closeTagStr;
+                                teaserLen += closeTagStart;
+                                sourceStr = sourceStr.Substring(closeTagEnd + 1, sourceStr.Count() - closeTagEnd - 1);
+                                var closeTagStck = tagStack.Pop();
+                                if (!closeTagStr.Contains(closeTagStck))
+                                {
+                                    Debug.WriteLine("Problem with tags, stack tag does not match the source tag");
+                                }
+                            }
+                            else
+                            { // close tag starts beyond length, strip it off and iterate, we already pushed on tagStack
+                                sourceStr = sourceStr.Substring(0, closeTagStart);
+                            }
+                            break;
+                    }
+
+                }
+                // if any tags left on stack, add them to preview
+                while (tagStack.Count > 0)
+                {
+                    // currently messages are wrapped in <p> </p> tags make sure
+                    // to place the ... before the last tag is placed
+                    if (tagStack.Count == 1)
+                        teaser += "...";
+
+                    teaser += tagStack.Pop();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return teaser;
+        }
+
+        public List<BlogViewModel> GetBlogPosts()
+        {
+            List<BlogViewModel> model = null;
+            
             using (ApplicationDbContext db = new ApplicationDbContext())
             {
-                model = db.CommPosts.Where(cp => cp.Communication.CommunicationType.CommunicationTypeDesc == "Blog Post").Select(cp => new BlogAngularViewModel()
+                model = db.Communications.Where(c => c.CommunicationType.CommunicationTypeDesc == "Blog Post"
+                                                    && !c.Deleted
+                                                    && c.Published).Select(c => new BlogViewModel()
                 {
-                    Message = cp.Communication.Message,
-                    MessageTitle = cp.Communication.MessageTitle,
-                    MessageLead = cp.Communication.MessageLead,
-                    CreatedByName = cp.Communication.Creator.DisplayName,
-                    DatePosted = cp.PostedDate,
-                    ImgUrl = cp.Communication.Creator.ImgUrl
+                    BlogId = c.CommunicationId,
+                    Message = c.Message,
+                    MessageTitle = c.MessageTitle,
+                    MessageLead = c.MessageLead,
+                    CreatedByName = c.Creator.DisplayName,
+                    DatePosted = c.DatePosted,
+                    ImgUrl = c.Creator.ImgUrl
                 }).ToList();
             }
-            foreach (BlogAngularViewModel c in model)
+            foreach (BlogViewModel c in model)
             {
-                c.DatePostedString = c.DatePosted.ToShortDateString() + " " + c.DatePosted.ToLongTimeString();
+                c.DatePostedString = c.DatePosted.Value.ToShortDateString() + " " + c.DatePosted.Value.ToLongTimeString();
+                c.MessageLead = CreatePreview(c.Message);
+
             }
 
             if (model == null)
             {
-                model = new List<BlogAngularViewModel>();
+                model = new List<BlogViewModel>();
             }
 
             return model;
-        } 
+        }
+
+        public BlogViewModel GetBlogPost(int id)
+        {
+            BlogViewModel model = null;
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                Communication dbModel = db.Communications.FirstOrDefault(cp => cp.CommunicationType.CommunicationTypeDesc == "Blog Post" && cp.CommunicationId == id);
+                if (dbModel != null)
+                {
+                    model = new BlogViewModel
+                    {
+                        Message = dbModel.Message,
+                        MessageTitle = dbModel.MessageTitle,
+                        MessageLead = CreatePreview(dbModel.Message),
+                        CreatedByName = dbModel.Creator.DisplayName,
+                        DatePosted = dbModel.DatePosted,
+                        DatePostedString = dbModel.DatePosted.Value.ToShortDateString() + " " + dbModel.DatePosted.Value.ToLongTimeString(),                        
+                        ImgUrl = dbModel.Creator.ImgUrl
+                    };
+                }
+            }
+            
+            if (model == null)
+            {
+                model = new BlogViewModel();
+            }
+
+            return model;
+        }
 
         /********************* Communications *********************************/
         List<CoachViewModel> HydrateCommRecipients(string userId = "", string role = "")
@@ -762,6 +1041,8 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                 CommunicationTypeDesc = comm.CommunicationType.CommunicationTypeDesc,
                 DateCreated = comm.DateCreated,
                 DateLastEdited = comm.DateLastEdited,
+                PubDate = comm.PubDate,
+                UnPubDate = comm.UnPubDate,
                 CreatedById = comm.CreatorId,
                 CreatedByName = comm.Creator.FirstName + " " + comm.Creator.LastName,
                 Message = comm.Message,
@@ -785,7 +1066,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
             model = PopulateCommunicatiom(comm.Communication, role);
             // now fill in specifics from post
             model.DatePosted = comm.PostedDate;
-                        
+
             return model;
         }
 
@@ -816,29 +1097,11 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                 model.Recipients = new List<CoachViewModel>();
                 return model;
             }
-            // Try to get 3 ways
-            // 1. Try to get from CommPosts table, that way we can get posted date
-            // 2. Try to find in SentTos table, to get posted date
-            // 3. If not found there, get fom communications table
+            
             using (ApplicationDbContext db = new ApplicationDbContext())
-            {
-                CommSentTo commSent = null;
-                CommPost commPost = db.CommPosts.FirstOrDefault(c => c.CommunicationId == id);
-                if(commPost != null)
-                {
-                    model = PopulateCommFromCommPost(commPost, role);
-                }
-                else // nothing in CommPosts - try CommSentTos
-                {
-                    commSent = db.CommSentTos.FirstOrDefault(c => c.CommunicationId == id);
-                    model = model = PopulateCommFromCommSent(commSent, role);
-                }
-                if (commPost == null && commSent == null) // has not been sent or posted, so no posted date
-                {
-                    dbComm = db.Communications.FirstOrDefault(c => c.CommunicationId == id);
-                    model = PopulateCommunicatiom(dbComm, role);
-                }
-                
+            {                
+                dbComm = db.Communications.FirstOrDefault(c => c.CommunicationId == id);
+                model = PopulateCommunicatiom(dbComm, role);
             }
 
             return model;
@@ -862,7 +1125,28 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
             return;
         }
 
-        public void PostCommunication(int commId = 0, string creatorId = "")
+        //public void PostCommunication(int commId = 0, string creatorId = "")
+        //{
+        //    if (commId == 0 || creatorId == "")
+        //    {
+        //        return;
+        //    }
+        //    using (ApplicationDbContext db = new ApplicationDbContext())
+        //    {
+        //        // Think about seeing if entry exist and not allowing a duplicate, but 
+        //        // maybe someone wants to post something again, that is possible now.
+        //        CommPost commPost = new CommPost()
+        //        {
+        //            CommunicationId = commId,
+        //            PostedDate = DateTime.Now
+        //        };
+        //        db.CommPosts.Add(commPost);
+        //        db.SaveChanges();
+        //    }
+        //    return;
+        //}
+
+        public void ToggleCommunicationPosting(int commId = 0, string creatorId = "")
         {
             if (commId == 0 || creatorId == "")
             {
@@ -872,126 +1156,92 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
             {
                 // Think about seeing if entry exist and not allowing a duplicate, but 
                 // maybe someone wants to post something again, that is possible now.
-                CommPost commPost = new CommPost()
+                Communication communication = db.Communications.FirstOrDefault(c => c.CommunicationId == commId);
+
+                if(communication != null)
                 {
-                    CommunicationId = commId,
-                    PostedDate = DateTime.Now
-                };
-                db.CommPosts.Add(commPost);
-                db.SaveChanges();
+                    if(!communication.Published)
+                    {
+                        communication.DatePosted = DateTime.Now;
+                    }
+                    communication.Published = !communication.Published;
+                    db.SaveChanges();
+                }
             }
             return;
         }
 
-        // Break this up - too much simialar code. Find what is similar and call method, then fill in specifics
-        public CommunicationListViewModel GetCommunicationFromBox(string userId, string box = "All")
+        // Used for display of home page, only returning announcements that will be displayed
+        public List<CommunicationViewModel> GetAnnouncements()
         {
-            CommunicationListViewModel model = new CommunicationListViewModel();
-            List<CommunicationViewModel> allComms = null;
+            List<CommunicationViewModel> model = null;
 
             using (ApplicationDbContext db = new ApplicationDbContext())
             {
-                if (box == "" || box == "All" || box == "Drafts")
+                model = db.Communications.Where(c => c.CommunicationType.CommunicationTypeDesc == "Announcement"
+                                                             && c.PubDate <= DateTime.Today
+                                                             && c.UnPubDate >= DateTime.Today).Select(c => new CommunicationViewModel
+                                                             {
+                                                                 CommunicationTypeId = c.CommunicationTypeId,
+                                                                 CommunicationId = c.CommunicationId,
+                                                                 CommunicationTypeDesc = c.CommunicationType.CommunicationTypeDesc,
+                                                                 DateCreated = c.DateCreated,
+                                                                 DateLastEdited = c.DateLastEdited,
+                                                                 CreatedById = c.CreatorId,
+                                                                 CreatedByName = c.Creator.FirstName + " " + c.Creator.LastName,
+                                                                 Message = c.Message,
+                                                                 MessageTitle = c.MessageTitle,
+                                                                 MessageLead = c.MessageLead,
+                                                                 ImgUrl = c.Creator.ImgUrl,
+                                                                 DatePosted = c.DatePosted,
+                                                                 Published = c.Published,
+                                                                 PubDate = c.PubDate,
+                                                                 UnPubDate = c.UnPubDate
+                                                             }).ToList();
+
+            }
+            if(model == null)
+            {
+                model = new List<CommunicationViewModel>();
+            }
+            return model;
+        }
+        // Break this up - too much simialar code. Find what is similar and call method, then fill in specifics
+        // Should be able to just return one list, and check for comm type in cshtml
+        public CommunicationListViewModel GetCommunicationFromBox(string userId, string box = "Blog Post")
+        {
+            CommunicationListViewModel model = new CommunicationListViewModel();
+            List<CommunicationViewModel> allComms = null;
+            string type = box;
+
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {   
+                // move to adapter and pull all the repeated code to make method
+                allComms = db.Communications.Where(c => c.CreatorId == userId 
+                                                        && !c.Deleted 
+                                                        && c.CommunicationType.CommunicationTypeDesc == type).Select(c => new CommunicationViewModel
                 {
-                    // move to adapter and pull all the repeated code to make method
-                    allComms = db.Communications.Where(c => c.CreatorId == userId).Select(c => new CommunicationViewModel
-                    {
-                        CommunicationTypeId = c.CommunicationTypeId,
-                        CommunicationId = c.CommunicationId,
-                        CommunicationTypeDesc = c.CommunicationType.CommunicationTypeDesc,
-                        DateCreated = c.DateCreated,
-                        DateLastEdited = c.DateLastEdited,
-                        CreatedById = c.CreatorId,
-                        CreatedByName = c.Creator.FirstName + " " + c.Creator.LastName,
-                        Message = c.Message,
-                        MessageTitle = c.MessageTitle,
-                        MessageLead = c.MessageLead,
-                        ImgUrl = c.Creator.ImgUrl
-                    }).ToList();
-                    model.CreatedComms = allComms;
-                }
+                    CommunicationTypeId = c.CommunicationTypeId,
+                    CommunicationId = c.CommunicationId,
+                    CommunicationTypeDesc = c.CommunicationType.CommunicationTypeDesc,
+                    DateCreated = c.DateCreated,
+                    DateLastEdited = c.DateLastEdited,
+                    CreatedById = c.CreatorId,
+                    CreatedByName = c.Creator.FirstName + " " + c.Creator.LastName,
+                    Message = c.Message,
+                    MessageTitle = c.MessageTitle,
+                    MessageLead = c.MessageLead,
+                    ImgUrl = c.Creator.ImgUrl,
+                    DatePosted = c.DatePosted,
+                    Published = c.Published,
+                    PubDate = c.PubDate,
+                    UnPubDate = c.UnPubDate
+                }).ToList();
+                model.Comms = allComms;
+
                 if (allComms == null)
                 {
-                    model.CreatedComms = new List<CommunicationViewModel>();
-                }
-                allComms = null;
-                if (box == "" || box == "All" || box == "Sent")
-                {
-                    // sent communications by user
-                    allComms = db.CommSentTos.Where(c => c.Communication.CreatorId == userId).Select(c => new CommunicationViewModel
-                    {
-                        CommunicationTypeId = c.Communication.CommunicationTypeId,
-                        CommunicationId = c.Communication.CommunicationId,
-                        CommunicationTypeDesc = c.Communication.CommunicationType.CommunicationTypeDesc,
-                        DateCreated = c.Communication.DateCreated,
-                        DateLastEdited = c.Communication.DateLastEdited,
-                        CreatedById = c.Communication.CreatorId,
-                        CreatedByName = c.Communication.Creator.FirstName + " " + c.Communication.Creator.LastName,
-                        DatePosted = c.PostedDate,
-                        SentToId = c.SentTo.Id,
-                        SentToName = c.SentTo.FirstName + " " + c.SentTo.LastName,
-                        Message = c.Communication.Message,
-                        MessageTitle = c.Communication.MessageTitle,
-                        MessageLead = c.Communication.MessageLead,
-                        ImgUrl = c.SentTo.ImgUrl
-                    }).ToList();
-                }
-                model.SentComms = allComms;
-                if (allComms == null)
-                {
-                    model.SentComms = new List<CommunicationViewModel>();
-                }
-                allComms = null;
-                if (box == "" || box == "All" || box == "Inbox")
-                {
-                    // sent communications recieved by user
-                    allComms = db.CommSentTos.Where(c => c.UserId == userId).Select(c => new CommunicationViewModel
-                    {
-                        CommunicationTypeId = c.Communication.CommunicationTypeId,
-                        CommunicationId = c.Communication.CommunicationId,
-                        CommunicationTypeDesc = c.Communication.CommunicationType.CommunicationTypeDesc,
-                        DateCreated = c.Communication.DateCreated,
-                        DateLastEdited = c.Communication.DateLastEdited,
-                        CreatedById = c.Communication.CreatorId,
-                        CreatedByName = c.Communication.Creator.FirstName + " " + c.Communication.Creator.LastName,
-                        DatePosted = c.PostedDate,
-                        SentToId = c.SentTo.Id, // not used for posted by user
-                        SentToName = c.SentTo.FirstName + " " + c.SentTo.LastName,
-                        Message = c.Communication.Message,
-                        MessageTitle = c.Communication.MessageTitle,
-                        MessageLead = c.Communication.MessageLead,
-                        ImgUrl = c.Communication.Creator.ImgUrl
-                    }).ToList();
-                    model.ReceivedComms = allComms;
-                }
-                if (allComms == null)
-                {
-                    model.ReceivedComms = new List<CommunicationViewModel>();
-                }
-                allComms = null;
-                if (box == "" || box == "All" || box == "Posts")
-                {
-                    // communications posted by user
-                    allComms = db.CommPosts.Where(c => c.Communication.CreatorId == userId).Select(c => new CommunicationViewModel
-                    {
-                        CommunicationTypeId = c.Communication.CommunicationTypeId,
-                        CommunicationId = c.Communication.CommunicationId,
-                        CommunicationTypeDesc = c.Communication.CommunicationType.CommunicationTypeDesc,
-                        DateCreated = c.Communication.DateCreated,
-                        DateLastEdited = c.Communication.DateLastEdited,
-                        CreatedById = c.Communication.CreatorId,
-                        CreatedByName = c.Communication.Creator.FirstName + " " + c.Communication.Creator.LastName,
-                        DatePosted = c.PostedDate,
-                        Message = c.Communication.Message,
-                        MessageTitle = c.Communication.MessageTitle,
-                        MessageLead = c.Communication.MessageLead,
-                        ImgUrl = c.Communication.Creator.ImgUrl
-                    }).ToList();
-                }
-                model.PostedComms = allComms;
-                if (allComms == null)
-                {
-                    model.PostedComms = new List<CommunicationViewModel>();
+                    model.Comms = new List<CommunicationViewModel>();
                 }
             }
             return model;
@@ -1045,6 +1295,9 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                 role = GetUserRole(GetUserIdFromName(userName));
             }
             model.CommunicationTypes = HydrateCommunicationTypes(role);
+            model.PubDate = DateTime.Now;
+            model.UnPubDate = DateTime.Now;
+            model.Published = false;
 
             return model;
         }
@@ -1053,17 +1306,29 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
         {
             using (ApplicationDbContext db = new ApplicationDbContext())
             {
-                db.Communications.Add(new Communication
+                Communication newComm = new Communication
                 {
                     DateCreated = DateTime.Now,
                     DateLastEdited = DateTime.Now,
+                    DatePosted = DateTime.Now,
                     CommunicationTypeId = model.CommunicationTypeId,
                     Message = model.Message,
                     CreatorId = GetUserIdFromName(userName),
                     MessageLead = model.MessageLead,
-                    MessageTitle = model.MessageTitle
-                });
-                db.SaveChanges();
+                    MessageTitle = model.MessageTitle,
+                    PubDate = model.PubDate.Value,
+                    UnPubDate = model.UnPubDate
+                };
+                db.Communications.Add(newComm);
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Exception occurred creating communication");
+                }
+                
             }
             return;
         }
@@ -1074,20 +1339,30 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
             {
                 return;
             }
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            try
             {
-                Communication communication = db.Communications.FirstOrDefault(c => c.CommunicationId == commId);
-                communication.Message = model.Message;
-                communication.CommunicationTypeId = model.CommunicationTypeId;
-                communication.DateLastEdited = DateTime.Now;
-                communication.MessageLead = model.MessageLead;
-                communication.MessageTitle = model.MessageTitle;
-                db.SaveChanges();
+                using (ApplicationDbContext db = new ApplicationDbContext())
+                {
+                    Communication communication = db.Communications.FirstOrDefault(c => c.CommunicationId == commId);
+                    communication.Message = model.Message;
+                    communication.CommunicationTypeId = model.CommunicationTypeId;
+                    communication.DateLastEdited = DateTime.Now;
+                    communication.MessageLead = model.MessageLead;
+                    communication.MessageTitle = model.MessageTitle;
+                    communication.PubDate = model.PubDate;
+                    communication.UnPubDate = model.UnPubDate;
+                    db.SaveChanges();
+                }
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Exception occurred during update of communication");
+            }
+            
             return;
         }
 
-        // ONly delete communication if it has not been posted.
+        // Only delete communication if it has not been posted.
         public void DeleteCommunication(int id)
         {
             if (id <= 0)
@@ -1096,46 +1371,59 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
             }
             using (ApplicationDbContext db = new ApplicationDbContext())
             {
-                
+
                 Communication communication = db.Communications.Find(id);
                 if (communication == null)
                 {
                     return;
                 }
-                bool sent = false;
-                bool posted = false;
-                List<CommSentTo> commSents = db.CommSentTos.ToList();
-                foreach(CommSentTo commSent in commSents)
-                {
-                    if(commSent.CommunicationId == id)
-                    {
-                        sent = true;
-                        break;
-                    }
-                }
-
-                if(sent == false)
-                {                    
-                    List<CommPost> commPosts = db.CommPosts.ToList();
-                    foreach (CommPost commPost in commPosts)
-                    {
-                        if (commPost.CommunicationId == id)
-                        {
-                            sent = true;
-                            break;
-                        }
-                    }
-
-                }
-                if (!sent && !posted)
-                {
-                    db.Communications.Remove(communication);
-                }                
+                communication.Deleted = true;
                 db.SaveChanges();
             }
 
             return;
         }
 
+        public ElementViewModel GetElement(ElementTypes type)
+        {
+            ElementViewModel model = null;
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                Element element = db.Elements.FirstOrDefault(e => e.ElementType == (int)type);
+                if (element != null)
+                {
+                    model = new ElementViewModel()
+                    {
+                        ElementBody = element.ElementBody,
+                        ElementId = element.ElementId,
+                        ElementType = element.ElementType
+                    };
+                }
+            }
+            return model;
+        }
+
+        public void UpdateElement(ElementViewModel model)
+        {
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                Element dbElement = db.Elements.FirstOrDefault(e => e.ElementType == (int)model.ElementType);
+                if(dbElement != null)
+                {
+                    dbElement.ElementBody = model.ElementBody;
+                }
+                else
+                {
+                    dbElement = new Element()
+                    {
+                        ElementBody = model.ElementBody,
+                        ElementType = model.ElementType
+                    };
+                    db.Elements.Add(dbElement);
+                }
+                db.SaveChanges();
+            }
+            return;
+        }
     }
 }

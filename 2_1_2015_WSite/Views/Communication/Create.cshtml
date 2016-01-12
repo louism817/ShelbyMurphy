@@ -15,32 +15,46 @@
     @Html.AntiForgeryToken()
 
             <div class="row box box-info" style="padding: 15px">
-                <div class="col-xs-4">
+                <div class="col-md-4">
  
                         <div class="box-success">
 
                             <div class="form-group">
                                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
+                                @if (Model.CommunicationTypeDesc == "Blog Post")
+                                {
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.MessageTitle)<br />
+                                        @Html.TextBoxFor(model => model.MessageTitle, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.MessageTitle, "", new { @class = "text-danger" })
+                                    </div>
 
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.MessageTitle)<br/>
-                                    @Html.TextBoxFor(model => model.MessageTitle, new { @class = "form-control" } )
-                                    @Html.ValidationMessageFor(model => model.MessageTitle, "", new { @class = "text-danger" })
-
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.MessageLead)<br />
-                                    @Html.TextBoxFor(model => model.MessageLead, new { @class = "form-control" } )
-                                    @Html.ValidationMessageFor(model => model.MessageLead, "", new { @class = "text-danger" })
-
-                                </div>
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.CommunicationTypeId)
-                                    @Html.DropDownListFor(model => model.CommunicationTypeId, new SelectList(Model.CommunicationTypes, "CommunicationTypeId", "CommunicationTypeDesc"), "-Select Communication Type-", new { @class = "form-control" })
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.MessageLead)<br />
+                                        @Html.TextBoxFor(model => model.MessageLead, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.MessageLead, "", new { @class = "text-danger" })
+                                    </div>
+                                }
+                                
+                               <div class="form-group">                                   
+                                    @Html.DropDownListFor(model => model.CommunicationTypeId, new SelectList(Model.CommunicationTypes, "CommunicationTypeId", "CommunicationTypeDesc"), "-Select Communication Type-", new { @class = "form-control hidden" })
                                     @Html.ValidationMessageFor(model => model.CommunicationTypeId, "", new { @class = "text-danger" })
                                 </div>
+                                
+                                @if (Model.CommunicationTypeDesc == "Announcement")
+                                {
+                                    <div class="form-group date-pub-box">
+                                        @Html.LabelFor(model => model.PubDate)
+                                        @Html.DatePickerFor(model => model.PubDate, "autoclose=true", "format=mm/dd/yyyy", "todayBtn=linked", "todayHighlight=true")
+                                        @Html.ValidationMessageFor(model => model.PubDate, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group date-pub-box">
+                                        @Html.LabelFor(model => model.UnPubDate)
+                                        @Html.DatePickerFor(model => model.UnPubDate, "autoclose=true", "todayBtn=true", "todayHighlight=true")
+                                        @Html.ValidationMessageFor(model => model.UnPubDate, "", new { @class = "text-danger" })
+                                    </div>
+                                }
                                 <div class="form-group">
                                     <input type="submit" value="Create" class="btn btn-default" />
                                 </div>
@@ -50,12 +64,13 @@
 
 
 
-                    <div class="col-xs-8">
+                    <div class="col-md-8">
                         <div class="form-group">
                             @Html.LabelFor(model => model.Message)
                             @Html.EditorFor(model => model.Message, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
                         </div> 
+                        <div style="position:absolute;" onClick ="click();"><input type='file' id='editorDialog' name='files[]'></div>
                     </div>
             </div>
 }

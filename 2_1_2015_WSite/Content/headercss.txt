@@ -1,0 +1,14 @@
+<div class="col-md-offset-2 col-md-8">
+<table class="header">
+<tbody>
+<tr>
+<td><img src="../fileman/Uploads/ShelbyV.jpg" alt="" width="200" /></td>
+<td class="header-text">
+<p style="text-align: center;"><span style="font-family: tahoma, arial, helvetica, sans-serif; font-size: 18pt;">Hi, I'm Shelby.</span></p>
+<p style="text-align: center;"><span style="font-family: tahoma, arial, helvetica, sans-serif; font-size: 18pt;">I'm a coach, writer, entrepreneur.</span></p>
+<p style="text-align: center;"><span style="font-family: tahoma, arial, helvetica, sans-serif; font-size: 18pt;">I help people get their shit together. Some people say my work radically changed their lives. Others dabble in my ideas and then go on to find something else. Either way, welcome!</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>

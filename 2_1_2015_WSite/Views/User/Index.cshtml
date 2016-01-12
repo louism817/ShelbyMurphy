@@ -7,7 +7,7 @@
 @if (Model.Admins.Count > 0)
 {
        
-        <div class="row box box-info"  style="padding: 15px">
+        <div class="comm-box-outer">
             <h2>Admins</h2>
             <table class="table table-condensed" id="adminTable">
                 <thead>
@@ -22,16 +22,16 @@
                     @foreach (var u in Model.Admins)
                     {
                         <tr>
-                            <td class="col-xs-3">
+                            <td class="col-md-3">
                                 @if (u.ImgUrl != null && u.ImgUrl != "")
                                 {
                                     <img src="@(u.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
                                 }
                                 @(u.FirstName + " " + u.LastName)
                             </td>
-                            <td class="col-xs-3">@u.Email</td>
-                            <td class="col-xs-3">@u.DisplayName</td>
-                            <td class="col-xs-3">
+                            <td class="col-md-3">@u.Email</td>
+                            <td class="col-md-3">@u.DisplayName</td>
+                            <td class="col-md-3">
                                 @(Html.ActionLink("Edit Admin", "AddUpdate", new { userId = u.UserId }, new { @class = "btn btn-default btn-xs " }))
                                 @(Html.ActionLink("Delete Admin", "Delete", new { userId = u.UserId }, new { @class = "btn btn-danger btn-xs " }))
                             </td>
@@ -46,7 +46,7 @@
 }
 @if (Model.Clients.Count > 0)
 {
-    <div class="row box box-info"  style=" padding: 15px">
+    <div class="comm-box-outer">
         <h2>Clients</h2>
  
         <table table class="table table-condensed" id="clientTable">
@@ -63,16 +63,16 @@
                 @foreach (var u in Model.Clients)
                     {
                     <tr>
-                        <td class="col-xs-3">
+                        <td class="col-md-3">
                             @if (u.ImgUrl != null && u.ImgUrl != "")
                             {
                                 <img src="@(u.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
                             }
                             @(u.FirstName + " " + u.LastName)
                         </td>
-                        <td class="col-xs-3">@u.Email</td>
-                        <td class="col-xs-3">@u.DisplayName</td>
-                        <td class="col-xs-3">
+                        <td class="col-md-3">@u.Email</td>
+                        <td class="col-md-3">@u.DisplayName</td>
+                        <td class="col-md-3">
                             @(Html.ActionLink("Edit Client", "AddUpdate", new { userId = u.UserId }, new { @class = "btn btn-default btn-xs " }))
                             @(Html.ActionLink("Delete Client", "Delete", new { userId = u.UserId }, new { @class = "btn btn-danger btn-xs " }))
                         </td>
@@ -87,7 +87,7 @@
 }
 @if (Model.Generals.Count > 0)
 {
-    <div class="row box box-info"  style=" padding: 15px">
+    <div class="comm-box-outer">
         <h2>General Users</h2>
 
         <table table class="table table-condensed" id="usersTable">
@@ -104,16 +104,16 @@
                 @foreach (var u in Model.Generals)
                 {
                     <tr>
-                        <td class="col-xs-3">
+                        <td class="col-md-3">
                             @if (u.ImgUrl != null && u.ImgUrl != "")
                             {
                                 <img src="@(u.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
                             }
                             @(u.FirstName + " " + u.LastName)
                         </td>
-                        <td class="col-xs-3">@u.Email</td>
-                        <td class="col-xs-3">@u.DisplayName</td>
-                        <td class="col-xs-3">
+                        <td class="col-md-3">@u.Email</td>
+                        <td class="col-md-3">@u.DisplayName</td>
+                        <td class="col-md-3">
                             @(Html.ActionLink("Edit User", "AddUpdate", new { userId = u.UserId }, new { @class = "btn btn-default btn-xs " }))
                             @(Html.ActionLink("Delete User", "Delete", new { userId = u.UserId }, new { @class = "btn btn-danger btn-xs " }))
                         </td>

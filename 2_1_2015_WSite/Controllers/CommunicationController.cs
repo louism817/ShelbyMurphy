@@ -26,22 +26,29 @@ namespace _2_1_2015_WSite.Controllers
         }
 
         /*-----------------------------------------------------------*/
-        public ActionResult PostComm(int id, string creatorId)
+        public ActionResult ToggleCommunicationPosting(int id, string creatorId)
         {
-            _adapter.PostCommunication(id, creatorId);
+            _adapter.ToggleCommunicationPosting(id, creatorId);
             return RedirectToAction("Index");
         }
 
-        public ActionResult Index()
+        public ActionResult Index(string type = "Blog Post")
         {
-            return RedirectToAction("Box", new { box = "All" });
+            return RedirectToAction("Box", new { box = type });
+        }
+        [AllowAnonymous]
+        public ActionResult Announcements()
+        {
+            List<CommunicationViewModel> model = _adapter.GetAnnouncements();
+            return View(model);
         }
         // GET: Communications
         public ActionResult Box(string box = "")
         {
             string userId = _adapter.GetUserIdFromName(User.Identity.Name);
             CommunicationListViewModel model = _adapter.GetCommunicationFromBox(userId, box);
-  
+
+            model.CommType = box;
             return View(model);
         }
         // GET: Communications/Details/5
@@ -76,10 +83,12 @@ namespace _2_1_2015_WSite.Controllers
         }   
 
         // GET: Communications/Create
-        public ActionResult Create()
+        public ActionResult Create(string type  = "Blog Post")
         {
             CommunicationViewModel model = _adapter.GetInitializedCommunication(User.Identity.Name);
-
+            // we should be able to take out communication types form model.
+            model.CommunicationTypeId = model.CommunicationTypes.Find(ct => ct.CommunicationTypeDesc == type).CommunicationTypeId;
+            model.CommunicationTypeDesc = type;
             return View(model);
         }
 
@@ -106,6 +115,7 @@ namespace _2_1_2015_WSite.Controllers
 
             CommunicationViewModel model = _adapter.GetCommunicationById(id, role);
             model.CommunicationTypes = _adapter.HydrateCommunicationTypes(role);
+            model.CommunicationTypeId = model.CommunicationTypes.Find(ct => ct.CommunicationTypeDesc == model.CommunicationTypeDesc).CommunicationTypeId;
             return View(model);
         }
 
@@ -128,7 +138,15 @@ namespace _2_1_2015_WSite.Controllers
         [AllowAnonymous]
         public ActionResult Blog()
         {
-            return View();
+            List<BlogViewModel> model = _adapter.GetBlogPosts();
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public ActionResult BlogDetail(int id = 0)
+        {
+            BlogViewModel model = _adapter.GetBlogPost(id);
+            return View(model);
         }
 
     }

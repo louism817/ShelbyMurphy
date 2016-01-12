@@ -1,0 +1,141 @@
+﻿body {
+  overflow-x: hidden!important;
+  font-family: 'Source Sans Pro', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100%;
+  background: #d7d7d7;
+}
+/*
+.main-nav {
+    float: right;
+    list-style: none;
+    margin-top: 55px;
+}
+
+.main-nav li {
+    display: inline-block;
+    margin-left: 40px;
+}
+
+.main-nav li a:link, 
+.main-nav li a:visited {
+    padding: 8px 0;
+    color: #2e2e2e;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 90%;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom 0.2s;
+}
+*/
+.main-nav li a:hover, 
+.main-nav li a:active {
+    border-bottom: 2px solid #c6c6c6;
+}
+
+.box-outer, .comm-box-outer {
+    background-color: #fff;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    padding-bottom: 20px;
+    box-shadow: 0 2px 2px #efefef;
+}
+
+.comm-box-outer {
+    padding-bottom: 25px; /* account for prev next put in by datatables */
+}
+
+.box-inner {
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.blog-author {
+    background-color: #d7d7d7;
+    float: left;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 0 10px 20px 0;
+    
+}
+
+.blog-author img {
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+}
+
+
+.blog-preview-content {
+    float: right;
+    
+}
+
+.slm-img {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.comm-body {
+    width: 90%;
+    margin-left: 5%;
+}
+
+.form-label-right {
+    text-align: right;
+}
+
+.bottom-margin {
+    margin-bottom: 15px;
+}
+
+.header {
+  display: table;
+  background :#1e1e1e;
+}
+
+.header-text {
+    float: none;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 15px;
+}
+
+.header-background {
+    background: #1e1e1e;
+}
+
+.blog-section {
+    padding: 0 5px 0 5px;
+}
+
+.announce {
+    background: #f1f301;
+}
+
+.navbar {
+    margin-bottom: 10px;
+    min-height: 70px;
+    vertical-align: middle;
+}
+
+.nav > li > a, .navbar-brand {
+    padding-top: 25px;
+    font-size: 1.3em;
+}
+
+.date-pub-box {
+    position: relative;
+    z-index: 100000;
+}
+
+.blog-table > tbody > tr > td {
+    padding: 0;
+}
+
+.ch-charity {
+    max-width: 100%;
+}
+

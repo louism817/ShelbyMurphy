@@ -1,54 +1,80 @@
-﻿@{
+﻿@model List<_2_1_2015_WSite.Models.BlogViewModel>
+@{
     ViewBag.Title = "Home Page";
 }
 
-<div>
-    <center>
-        <img src="~/Content/images/slm1.png" />
-    </center>
-    
-</div>
-
 <div class="row">
-    <div class="col-xs-8">
+    <div class="col-md-9 blog-section">
+        @*<div class="col-md-10">
+            @Html.Action("Header")
+           @* <img class="slm-img" src="~/Content/images/ShelbyV.jpg" />*@
+        @*</div>*@
+        @Html.Action("Announcements", "Communication")
+        <div>
+            <table class="table blog-table" id="blogs">
+                <thead><tr><th></th></tr></thead>
+                <tbody>
+                    @foreach (var blog in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="box-outer">
+                                    <div class="blog-author">
+                                        <center>
+                                            <p style="align-content: center"><b> @blog.CreatedByName</b></p>
+                                            <img src="@blog.ImgUrl" /><br />
+                                        </center>
+                                    </div>
+                                    <div>
+                                        <h3><u>@blog.MessageTitle</u></h3>
+                                        <h5>Posted: @blog.DatePostedString </h5>
+                                        <a href="/Communication/BlogDetail?id=@(blog.BlogId)"><h4>@Html.Raw(blog.MessageLead)</h4></a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
 
-        @{Html.RenderAction("Blog", "Communication");}
+                    }
+                </tbody>
+            </table>
 
+            @* <h2>Hi, I’m Shelby. I’m a coach, writer, entrepreneur. I help people get their shit together. Some people say my work radically changed their lives. Others dabble in my ideas and then go on to find something else. Either way, welcome!</h2>*@
 
-    </div>
- 
-    <div class="col-xs-4">
-        <div class="row box box-info" style="margin-top: 13px; padding: 20px">
-            <div class="box-success" style="margin: 20px; float:left; background-color: #f0f0f0; border-radius: 10px; padding: 10px;">
+           
+        </div>
+    </div>   
+
+    <div class="col-md-3 blog-section">
+        <div class="box-outer">
+            <div class="box-inner">
                 <center>
-                    <h3 style="align-content: center">Sign Up For Our Newsletter</h3>
-                    <form action="~/User/Subscribe" method="post">
+                    <h4 style="align-content: center">Sign up for our Health &amp; Happiness Newsletter and get motivating health and fitness tips and articles</h4>
+                    <form action="http://fitproconnect.com/ListBuilders/Subscribe.aspx" method="post">
                         <div class="form-group">
-                            <label for="firstname">First Name: </label>
-                            <input class="form-control" type="text" id="firstname" name="firstName"><br>                           
-                            <label for="firstname">Last Name: </label>
-                            <input class="form-control" type="text" id="lastname" name="lastName"><br>
-                            <label for="eMail">Email Address: </label>
-                            <input class="form-control" type="text" id="eMail" name="eMail"><br>
-                            <input type="submit" class="btn btn-info" value="Submit Form" />
+                            <label for="firstName">First Name: </label>
+                            <input class="form-control" type="text" id="firstName" name="SubscriberFirstName"><br>
+                            <label for="lastName">Last Name: </label>
+                            <input class="form-control" type="text" id="lastName" name="SubscriberLastName"><br>
+                            <label for="eMail">Email: </label>
+                            <input class="form-control" type="text" id="eMail" name="SubscriberEmail"><br>
+                            <input type="submit" class="btn btn-info" value="Sign Me Up!" />
+                            <input type="hidden" name="ListBuilderID" value="890780e5-1135-471c-8d57-6cea5fa1bb8b">
                         </div>
                     </form>
-
                 </center>
             </div>
- 
         </div>
-        <div class="row box box-info" style="margin-top: 13px; padding: 20px">
-            <div class="box-success" style="margin: 20px; float:left; background-color: #f0f0f0; border-radius: 10px; padding: 10px;">
-                <center>
-                    
-                    <div id="note_from_the_universe">
-                    <script language="javascript" src="http://www.tut.com/resources/notes/random.js"></script></div>
-
-
-                </center>
-            </div>
-
+        <div class="box-outer">
+            <a href="http://www.challengecharity.com"><img src="~/Content/images/ChallengeCharity.png" alt="Challange: Charity logo" class="ch-charity"/></a>
         </div>
     </div>
 </div>
+
+ <script>
+    $(function () {
+        $('#blogs').dataTable({
+            "lengthMenu": [5, 10, 15, 25]
+        }).removeClass("dataTable");
+    });
+</script> 
+

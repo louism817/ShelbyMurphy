@@ -1,0 +1,30 @@
+﻿@model List<_2_1_2015_WSite.Models.CommunicationViewModel>
+
+@{
+    ViewBag.Title = "Announcements";
+    Layout = null;
+}
+
+<div>
+    <div>
+        @foreach (var announ in Model)
+        {
+            <div class="box-outer announce">
+                <div>
+                    <div>@Html.Raw(announ.Message)</div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $('#authorComms').dataTable();
+        $('#receivedComms').dataTable();
+        $('#sentComms').dataTable();
+        $('#postedComms').dataTable();
+    });
+</script>

@@ -17,6 +17,12 @@ namespace _2_1_2015_WSite.Data.Models
         [Required]
         public DateTime DateCreated { get; set; }
         public DateTime DateLastEdited { get; set; }
+        public DateTime? DatePosted { get; set; }
+        
+        public DateTime? PubDate { get; set; }
+        public DateTime? UnPubDate { get; set; }
+        public bool Published { get; set; }
+        public bool Deleted { get; set; }
         public string MessageTitle { get; set; }
         public string MessageLead { get; set; }
         [Required]

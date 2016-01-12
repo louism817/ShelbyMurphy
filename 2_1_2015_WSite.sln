@@ -1,30 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2_1_2015_WSite", "2_1_2015_WSite\2_1_2015_WSite.csproj", "{F3670A48-8387-4AE9-8DBE-D37C4A939163}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShelbyMurphy", "2_1_2015_WSite\ShelbyMurphy.csproj", "{F3670A48-8387-4AE9-8DBE-D37C4A939163}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2_1_2015_WSite.Data", "2_1_2015_WSite.Data\2_1_2015_WSite.Data.csproj", "{A2006C80-0426-4D71-B143-D80650CA234D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShelbyMurphy.Data", "2_1_2015_WSite.Data\ShelbyMurphy.Data.csproj", "{A2006C80-0426-4D71-B143-D80650CA234D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2_1_2015_WSite.Data.Models", "2_1_2015_WSite.Data.Models\2_1_2015_WSite.Data.Models.csproj", "{680D6D1F-9463-47A2-85C4-F9F8BAC760A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShelbyMurphy.Data.Models", "2_1_2015_WSite.Data.Models\ShelbyMurphy.Data.Models.csproj", "{680D6D1F-9463-47A2-85C4-F9F8BAC760A1}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs20
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = 2_1_2015_WSite\\2_1_2015_WSite.csproj
-		SccProjectName1 = 2_1_2015_WSite
-		SccLocalPath1 = 2_1_2015_WSite
-		SccProjectUniqueName2 = 2_1_2015_WSite.Data\\2_1_2015_WSite.Data.csproj
-		SccProjectName2 = 2_1_2015_WSite.Data
-		SccLocalPath2 = 2_1_2015_WSite.Data
-		SccProjectUniqueName3 = 2_1_2015_WSite.Data.Models\\2_1_2015_WSite.Data.Models.csproj
-		SccProjectName3 = 2_1_2015_WSite.Data.Models
-		SccLocalPath3 = 2_1_2015_WSite.Data.Models
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

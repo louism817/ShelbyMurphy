@@ -29,10 +29,12 @@ namespace _2_1_2015_WSite.Adapters.Interface
         AppointmentViewModel GetAppointmentById(int id = 0);
         void DeleteAppointment(int id = 0);
         // Angular
-        List<BlogAngularViewModel> GetBlogPostsForAngular();
+        List<BlogViewModel> GetBlogPosts();
+        BlogViewModel GetBlogPost(int id = 0);
         // Communications
-        void PostCommunication(int commId = 0, string creatorId = "");
+        void ToggleCommunicationPosting(int commId = 0, string creatorId = "");
         CommunicationListViewModel GetCommunicationFromBox(string userId, string box = "All");
+        List<CommunicationViewModel> GetAnnouncements();
         CommunicationViewModel GetCommunicationById(int id = 0, string role = "");
         void SendCommunication(int commId = 0, string toId = "");
         CommunicationViewModel GetInitializedCommunication(string userName = "");
@@ -40,5 +42,7 @@ namespace _2_1_2015_WSite.Adapters.Interface
         List<CommunicationTypeViewModel> HydrateCommunicationTypes(string role = "");
         void UpdateCommunication(CommunicationViewModel model, int commId);
         void DeleteCommunication(int id);
+        ElementViewModel GetElement(ElementTypes type);
+        void UpdateElement(ElementViewModel model);
     }
 }

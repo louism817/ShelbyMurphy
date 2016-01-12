@@ -4,7 +4,7 @@
     ViewBag.Title = "Index";
 }
 
-
+<div class="col-md-12">
 @if(User.IsInRole("Admin"))
 {
     <p>
@@ -21,7 +21,7 @@ else
 
     @if (Model.CreatedComms.Count > 0)
     {
-        <div class="row box box-info" style="padding:15px">
+        <div class="box-outer">
             <h2>Authored Communications</h2>
 
             <table class="table table-condensed" id="authorComms">
@@ -36,14 +36,14 @@ else
                     @foreach (var item in Model.CreatedComms)
                     {
                         <tr>
-                            <td class="col-xs-3">
+                            <td class="col-md-3">
                                 @(item.CommunicationTypeDesc)
                             </td>
-                            <td class="col-xs-6">
+                            <td class="col-md-6">
                                 @(item.MessageLead)
                                 <!--                        @Html.Raw(item.Message) -->
                             </td>
-                            <td class="col-xs-3">
+                            <td class="col-md-3">
                                 @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
                                 @Html.ActionLink("Edit", "Edit", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
                                 @if (item.CommunicationTypeDesc == "Email" || item.CommunicationTypeDesc == "Online Chat Message")
@@ -67,7 +67,7 @@ else
 
     @if (Model.SentComms.Count > 0)
     {
-        <div class="row box box-info" style="padding:15px">
+        <div class="box-outer">
             <h2>Sent Communications</h2>
             <table class="table table-condensed" id="sentComms">
                 <thead>
@@ -84,14 +84,14 @@ else
                     @foreach (var item in Model.SentComms)
                     {
                         <tr>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @(item.CommunicationTypeDesc)
                             </td>
-                            <td class="col-xs-3">
+                            <td class="col-md-3">
                                 @(item.MessageLead)
                                 <!--                        @Html.Raw(item.Message) -->
                             </td>
-                            <td class="col-xs-3">
+                            <td class="col-md-3">
                                 @if (item.ImgUrl != null && item.ImgUrl != "")
                                 {
                                     <img src="@(item.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
@@ -99,10 +99,10 @@ else
                                 @(item.SentToName)
 
                             </td>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @(item.DatePosted)
                             </td>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
                             </td>
                         </tr>
@@ -116,7 +116,7 @@ else
 
     @if (Model.ReceivedComms.Count > 0)
     {
-        <div class="row box box-info" style="padding:15px">
+        <div class="box-outer">
             <h2>Recieved Communications</h2>
             <table class="table table-condensed" id="receivedComms">
                 <thead>
@@ -133,24 +133,24 @@ else
                     @foreach (var item in Model.ReceivedComms)
                     {
                         <tr>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @(item.CommunicationTypeDesc)
                             </td>
-                            <td class="col-xs-3">
+                            <td class="col-md-3">
                                 @(item.MessageLead)
                                 <!--                        @Html.Raw(item.Message) -->
                             </td>
-                            <td class="col-xs-3">
+                            <td class="col-md-3">
                                 @if (item.ImgUrl != null && item.ImgUrl != "")
                                 {
                                     <img src="@(item.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
                                 }
                                 @(item.CreatedByName)
                             </td>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @(item.DatePosted)
                             </td>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
                             </td>
                         </tr>
@@ -164,7 +164,7 @@ else
 
     @if (Model.PostedComms.Count > 0)
     {
-        <div class="row box box-info" style="padding:15px">
+        <div class="box-outer">
             <h2>Posted Communications</h2>
             <table class="table table-condensed" id="receivedComms">
                 <thead>
@@ -179,17 +179,17 @@ else
                     @foreach (var item in Model.PostedComms)
                     {
                         <tr>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @(item.CommunicationTypeDesc)
                             </td>
-                            <td class="col-xs-6">
+                            <td class="col-md-6">
                                 @(item.MessageLead)
                                 <!--                        @Html.Raw(item.Message) -->
                             </td>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @(item.DatePosted)
                             </td>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
                             </td>
                         </tr>
@@ -199,7 +199,7 @@ else
         </div>
     }
 
-
+</div>
 <script>
     $(function () {
         $('#authorComms').dataTable();

@@ -1,14 +1,14 @@
-﻿@{
+﻿@model _2_1_2015_WSite.Models.ElementViewModel
+@{
     ViewBag.Title = "About";
 }
 
-
-
-<link href="~/Content/Site.css" rel="stylesheet" />
-<center>
-    <div class="row box box-info" style="padding:15px; margin: 30px; width: 45%">
-        <h3>Shelby L. Murphy</h3>
-        <p>@ViewBag.Message</p>
+<div class="row">
+    <div class="box-outer col-md-offset-2 col-md-8 col-md-offset-2">
+        <div class="box-info">
+            <div>
+                @Html.Raw(Model.ElementBody)
+            </div>                
+        </div>
     </div>
-
-</center>
+</div>

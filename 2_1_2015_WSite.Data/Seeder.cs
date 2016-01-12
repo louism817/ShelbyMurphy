@@ -160,6 +160,13 @@ namespace _2_1_2015_WSite.Data
                 new CommunicationType
                 {
                     CommunicationTypeDesc = "Blog Post"
+                },
+                new CommunicationType
+                {
+                    CommunicationTypeDesc = "About"
+                }, new CommunicationType
+                {
+                    CommunicationTypeDesc = "Tagline"
                 });
 
             db.ApptTimeFrames.AddOrUpdate(t => new { t.ApptTimeFrameDesc },

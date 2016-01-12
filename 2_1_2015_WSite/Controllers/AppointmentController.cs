@@ -50,7 +50,7 @@ namespace _2_1_2015_WSite.Controllers
 //        public ActionResult CreateUpdate(DateTime? reqDate, int apptTypeId=1, int apptTimeFrameId=1, int id=0, bool accepted = false, string reason = "")
         {
             string userName = User.Identity.Name;
-            return RedirectToAction("Index");
+         //   return RedirectToAction("Index");
             //DateTime date = (reqDate == null) ? DateTime.Now : (DateTime)reqDate;
             //string apptReason = (reason == "") ? "Discuss Your Services" : reason;
             //AppointmentViewModel model = new AppointmentViewModel()

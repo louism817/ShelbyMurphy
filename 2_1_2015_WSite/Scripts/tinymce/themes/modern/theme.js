@@ -1,8 +1,8 @@
 /**
  * theme.js
  *
- * Copyright, Moxiecode Systems AB
  * Released under LGPL License.
+ * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
  *
  * License: http://www.tinymce.com/license
  * Contributing: http://www.tinymce.com/contributing
@@ -11,12 +11,13 @@
 /*global tinymce:true */
 
 tinymce.ThemeManager.add('modern', function(editor) {
-	var self = this, settings = editor.settings, Factory = tinymce.ui.Factory, each = tinymce.each, DOM = tinymce.DOM;
+	var self = this, settings = editor.settings, Factory = tinymce.ui.Factory,
+		each = tinymce.each, DOM = tinymce.DOM, Rect = tinymce.geom.Rect, FloatPanel = tinymce.ui.FloatPanel;
 
 	// Default menus
 	var defaultMenus = {
 		file: {title: 'File', items: 'newdocument'},
-		edit: {title: 'Edit', items: 'undo redo | cut copy paste | selectall'},
+		edit: {title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall'},
 		insert: {title: 'Insert', items: '|'},
 		view: {title: 'View', items: 'visualaid |'},
 		format: {title: 'Format', items: 'bold italic underline strikethrough superscript subscript | formats | removeformat'},
@@ -27,113 +28,128 @@ tinymce.ThemeManager.add('modern', function(editor) {
 	var defaultToolbar = "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | " +
 		"bullist numlist outdent indent | link image";
 
+	function createToolbar(items, size) {
+		var toolbarItems = [], buttonGroup;
+
+		if (!items) {
+			return;
+		}
+
+		each(items.split(/[ ,]/), function(item) {
+			var itemName;
+
+			function bindSelectorChanged() {
+				var selection = editor.selection;
+
+				function setActiveItem(name) {
+					return function(state, args) {
+						var nodeName, i = args.parents.length;
+
+						while (i--) {
+							nodeName = args.parents[i].nodeName;
+							if (nodeName == "OL" || nodeName == "UL") {
+								break;
+							}
+						}
+
+						item.active(state && nodeName == name);
+					};
+				}
+
+				if (itemName == "bullist") {
+					selection.selectorChanged('ul > li', setActiveItem("UL"));
+				}
+
+				if (itemName == "numlist") {
+					selection.selectorChanged('ol > li', setActiveItem("OL"));
+				}
+
+				if (item.settings.stateSelector) {
+					selection.selectorChanged(item.settings.stateSelector, function(state) {
+						item.active(state);
+					}, true);
+				}
+
+				if (item.settings.disabledStateSelector) {
+					selection.selectorChanged(item.settings.disabledStateSelector, function(state) {
+						item.disabled(state);
+					});
+				}
+			}
+
+			if (item == "|") {
+				buttonGroup = null;
+			} else {
+				if (Factory.has(item)) {
+					item = {type: item, size: size};
+					toolbarItems.push(item);
+					buttonGroup = null;
+				} else {
+					if (!buttonGroup) {
+						buttonGroup = {type: 'buttongroup', items: []};
+						toolbarItems.push(buttonGroup);
+					}
+
+					if (editor.buttons[item]) {
+						// TODO: Move control creation to some UI class
+						itemName = item;
+						item = editor.buttons[itemName];
+
+						if (typeof item == "function") {
+							item = item();
+						}
+
+						item.type = item.type || 'button';
+						item.size = size;
+
+						item = Factory.create(item);
+						buttonGroup.items.push(item);
+
+						if (editor.initialized) {
+							bindSelectorChanged();
+						} else {
+							editor.on('init', bindSelectorChanged);
+						}
+					}
+				}
+			}
+		});
+
+		return {
+			type: 'toolbar',
+			layout: 'flow',
+			items: toolbarItems
+		};
+	}
+
 	/**
 	 * Creates the toolbars from config and returns a toolbar array.
 	 *
+	 * @param {String} size Optional toolbar item size.
 	 * @return {Array} Array with toolbars.
 	 */
-	function createToolbars() {
+	function createToolbars(size) {
 		var toolbars = [];
 
 		function addToolbar(items) {
-			var toolbarItems = [], buttonGroup;
+			if (items) {
+				toolbars.push(createToolbar(items, size));
+				return true;
+			}
+		}
 
-			if (!items) {
+		// Convert toolbar array to multiple options
+		if (tinymce.isArray(settings.toolbar)) {
+			// Empty toolbar array is the same as a disabled toolbar
+			if (settings.toolbar.length === 0) {
 				return;
 			}
 
-			each(items.split(/[ ,]/), function(item) {
-				var itemName;
-
-				function bindSelectorChanged() {
-					var selection = editor.selection;
-
-					if (itemName == "bullist") {
-						selection.selectorChanged('ul > li', function(state, args) {
-							var nodeName, i = args.parents.length;
-
-							while (i--) {
-								nodeName = args.parents[i].nodeName;
-								if (nodeName == "OL" || nodeName == "UL") {
-									break;
-								}
-							}
-
-							item.active(nodeName == "UL");
-						});
-					}
-
-					if (itemName == "numlist") {
-						selection.selectorChanged('ol > li', function(state, args) {
-							var nodeName, i = args.parents.length;
-
-							while (i--) {
-								nodeName = args.parents[i].nodeName;
-								if (nodeName == "OL" || nodeName == "UL") {
-									break;
-								}
-							}
-
-							item.active(nodeName == "OL");
-						});
-					}
-
-					if (item.settings.stateSelector) {
-						selection.selectorChanged(item.settings.stateSelector, function(state) {
-							item.active(state);
-						}, true);
-					}
-
-					if (item.settings.disabledStateSelector) {
-						selection.selectorChanged(item.settings.disabledStateSelector, function(state) {
-							item.disabled(state);
-						});
-					}
-				}
-
-				if (item == "|") {
-					buttonGroup = null;
-				} else {
-					if (Factory.has(item)) {
-						item = {type: item};
-
-						if (settings.toolbar_items_size) {
-							item.size = settings.toolbar_items_size;
-						}
-
-						toolbarItems.push(item);
-						buttonGroup = null;
-					} else {
-						if (!buttonGroup) {
-							buttonGroup = {type: 'buttongroup', items: []};
-							toolbarItems.push(buttonGroup);
-						}
-
-						if (editor.buttons[item]) {
-							itemName = item;
-							item = editor.buttons[itemName];
-							item.type = item.type || 'button';
-
-							if (settings.toolbar_items_size) {
-								item.size = settings.toolbar_items_size;
-							}
-
-							item = Factory.create(item);
-							buttonGroup.items.push(item);
-
-							if (editor.initialized) {
-								bindSelectorChanged();
-							} else {
-								editor.on('init', bindSelectorChanged);
-							}
-						}
-					}
-				}
+			tinymce.each(settings.toolbar, function(toolbar, i) {
+				settings["toolbar" + (i + 1)] = toolbar;
 			});
 
-			toolbars.push({type: 'toolbar', layout: 'flow', items: toolbarItems});
-
-			return true;
+			delete settings.toolbar;
 		}
 
 		// Generate toolbar<n>
@@ -143,12 +159,21 @@ tinymce.ThemeManager.add('modern', function(editor) {
 			}
 		}
 
-		// Generate toolbar or default toolbar
-		if (!toolbars.length) {
+		// Generate toolbar or default toolbar unless it's disabled
+		if (!toolbars.length && settings.toolbar !== false) {
 			addToolbar(settings.toolbar || defaultToolbar);
 		}
 
-		return toolbars;
+		if (toolbars.length) {
+			return {
+				type: 'panel',
+				layout: 'stack',
+				classes: "toolbar-grp",
+				ariaRoot: true,
+				ariaRemember: true,
+				items: toolbars
+			};
+		}
 	}
 
 	/**
@@ -247,7 +272,7 @@ tinymce.ThemeManager.add('modern', function(editor) {
 			}
 		}
 
-		var enabledMenuNames = settings.menubar ? settings.menubar.split(/[ ,]/) : defaultMenuBar;
+		var enabledMenuNames = typeof settings.menubar == "string" ? settings.menubar.split(/[ ,]/) : defaultMenuBar;
 		for (var i = 0; i < enabledMenuNames.length; i++) {
 			var menu = enabledMenuNames[i];
 			menu = createMenu(menu);
@@ -270,7 +295,7 @@ tinymce.ThemeManager.add('modern', function(editor) {
 			var item = panel.find(type)[0];
 
 			if (item) {
-				item.focus();
+				item.focus(true);
 			}
 		}
 
@@ -309,14 +334,17 @@ tinymce.ThemeManager.add('modern', function(editor) {
 		containerSize = getSize(containerElm);
 		iframeSize = getSize(iframeElm);
 
-		width = Math.max(settings.min_width || 100, width);
-		height = Math.max(settings.min_height || 100, height);
-		width = Math.min(settings.max_width || 0xFFFF, width);
-		height = Math.min(settings.max_height || 0xFFFF, height);
+		if (width !== null) {
+			width = Math.max(settings.min_width || 100, width);
+			width = Math.min(settings.max_width || 0xFFFF, width);
 
-		DOM.css(containerElm, 'width', width + (containerSize.width - iframeSize.width));
-		DOM.css(iframeElm, 'width', width);
-		DOM.css(iframeElm, 'height', height);
+			DOM.setStyle(containerElm, 'width', width + (containerSize.width - iframeSize.width));
+			DOM.setStyle(iframeElm, 'width', width);
+		}
+
+		height = Math.max(settings.min_height || 100, height);
+		height = Math.min(settings.max_height || 0xFFFF, height);
+		DOM.setStyle(iframeElm, 'height', height);
 
 		editor.fire('ResizeEditor');
 	}
@@ -327,11 +355,246 @@ tinymce.ThemeManager.add('modern', function(editor) {
 	}
 
 	/**
+	 * Handles contextual toolbars.
+	 */
+	function addContextualToolbars() {
+		var scrollContainer;
+
+		function getContextToolbars() {
+			return editor.contextToolbars || [];
+		}
+
+		function getElementRect(elm) {
+			var pos, targetRect, root;
+
+			pos = tinymce.DOM.getPos(editor.getContentAreaContainer());
+			targetRect = editor.dom.getRect(elm);
+			root = editor.dom.getRoot();
+
+			// Adjust targetPos for scrolling in the editor
+			if (root.nodeName == 'BODY') {
+				targetRect.x -= root.ownerDocument.documentElement.scrollLeft || root.scrollLeft;
+				targetRect.y -= root.ownerDocument.documentElement.scrollTop || root.scrollTop;
+			}
+
+			targetRect.x += pos.x;
+			targetRect.y += pos.y;
+
+			return targetRect;
+		}
+
+		function hideAllFloatingPanels() {
+			each(editor.contextToolbars, function(toolbar) {
+				if (toolbar.panel) {
+					toolbar.panel.hide();
+				}
+			});
+		}
+
+		function reposition(match) {
+			var relPos, panelRect, elementRect, contentAreaRect, panel, relRect, testPositions;
+
+			if (editor.removed) {
+				return;
+			}
+
+			if (!match || !match.toolbar.panel) {
+				hideAllFloatingPanels();
+				return;
+			}
+
+			testPositions = [
+				'tc-bc', 'bc-tc',
+				'tl-bl', 'bl-tl',
+				'tr-br', 'br-tr'
+			];
+
+			panel = match.toolbar.panel;
+			panel.show();
+
+			elementRect = getElementRect(match.element);
+			panelRect = tinymce.DOM.getRect(panel.getEl());
+			contentAreaRect = tinymce.DOM.getRect(editor.getContentAreaContainer() || editor.getBody());
+
+			// We need to use these instead of the rect values since the style
+			// size properites might not be the same as the real size for a table
+			elementRect.w = match.element.clientWidth;
+			elementRect.h = match.element.clientHeight;
+
+			if (!editor.inline) {
+				contentAreaRect.w = editor.getDoc().documentElement.offsetWidth;
+			}
+
+			// Inflate the elementRect so it doesn't get placed above resize handles
+			if (editor.selection.controlSelection.isResizable(match.element)) {
+				elementRect = Rect.inflate(elementRect, 0, 8);
+			}
+
+			relPos = Rect.findBestRelativePosition(panelRect, elementRect, contentAreaRect, testPositions);
+
+			if (relPos) {
+				each(testPositions.concat('inside'), function(pos) {
+					panel.classes.toggle('tinymce-inline-' + pos, pos == relPos);
+				});
+
+				relRect = Rect.relativePosition(panelRect, elementRect, relPos);
+				panel.moveTo(relRect.x, relRect.y);
+			} else {
+				each(testPositions, function(pos) {
+					panel.classes.toggle('tinymce-inline-' + pos, false);
+				});
+
+				panel.classes.toggle('tinymce-inline-inside', true);
+
+				elementRect = Rect.intersect(contentAreaRect, elementRect);
+
+				if (elementRect) {
+					relPos = Rect.findBestRelativePosition(panelRect, elementRect, contentAreaRect, [
+						'tc-tc', 'tl-tl', 'tr-tr'
+					]);
+
+					if (relPos) {
+						relRect = Rect.relativePosition(panelRect, elementRect, relPos);
+						panel.moveTo(relRect.x, relRect.y);
+					} else {
+						panel.moveTo(elementRect.x, elementRect.y);
+					}
+				} else {
+					panel.hide();
+				}
+			}
+
+			//drawRect(contentAreaRect, 'blue');
+			//drawRect(elementRect, 'red');
+			//drawRect(panelRect, 'green');
+		}
+
+		function repositionHandler() {
+			function execute() {
+				if (editor.selection) {
+					reposition(findFrontMostMatch(editor.selection.getNode()));
+				}
+			}
+
+			tinymce.util.Delay.requestAnimationFrame(execute);
+		}
+
+		function bindScrollEvent() {
+			if (!scrollContainer) {
+				scrollContainer = editor.selection.getScrollContainer() || editor.getWin();
+				tinymce.$(scrollContainer).on('scroll', repositionHandler);
+
+				editor.on('remove', function() {
+					tinymce.$(scrollContainer).off('scroll');
+				});
+			}
+		}
+
+		function showContextToolbar(match) {
+			var panel;
+
+			if (match.toolbar.panel) {
+				match.toolbar.panel.show();
+				reposition(match);
+				return;
+			}
+
+			bindScrollEvent();
+
+			panel = Factory.create({
+				type: 'floatpanel',
+				role: 'application',
+				classes: 'tinymce tinymce-inline',
+				layout: 'flex',
+				direction: 'column',
+				align: 'stretch',
+				autohide: false,
+				autofix: true,
+				fixed: true,
+				border: 1,
+				items: createToolbar(match.toolbar.items)
+			});
+
+			match.toolbar.panel = panel;
+			panel.renderTo(document.body).reflow();
+			reposition(match);
+		}
+
+		function hideAllContextToolbars() {
+			tinymce.each(getContextToolbars(), function(toolbar) {
+				if (toolbar.panel) {
+					toolbar.panel.hide();
+				}
+			});
+		}
+
+		function findFrontMostMatch(targetElm) {
+			var i, y, parentsAndSelf, toolbars = getContextToolbars();
+
+			parentsAndSelf = editor.$(targetElm).parents().add(targetElm);
+			for (i = parentsAndSelf.length - 1; i >= 0; i--) {
+				for (y = toolbars.length - 1; y >= 0; y--) {
+					if (toolbars[y].predicate(parentsAndSelf[i])) {
+						return {
+							toolbar: toolbars[y],
+							element: parentsAndSelf[i]
+						};
+					}
+				}
+			}
+
+			return null;
+		}
+
+		editor.on('click keyup setContent', function(e) {
+			// Only act on partial inserts
+			if (e.type == 'setcontent' && !e.selection) {
+				return;
+			}
+
+			// Needs to be delayed to avoid Chrome img focus out bug
+			tinymce.util.Delay.setEditorTimeout(editor, function() {
+				var match;
+
+				match = findFrontMostMatch(editor.selection.getNode());
+				if (match) {
+					hideAllContextToolbars();
+					showContextToolbar(match);
+				} else {
+					hideAllContextToolbars();
+				}
+			});
+		});
+
+		editor.on('blur hide', hideAllContextToolbars);
+
+		editor.on('ObjectResizeStart', function() {
+			var match = findFrontMostMatch(editor.selection.getNode());
+
+			if (match && match.toolbar.panel) {
+				match.toolbar.panel.hide();
+			}
+		});
+
+		editor.on('nodeChange ResizeEditor ResizeWindow', repositionHandler);
+
+		editor.on('remove', function() {
+			tinymce.each(getContextToolbars(), function(toolbar) {
+				if (toolbar.panel) {
+					toolbar.panel.remove();
+				}
+			});
+
+			editor.contextToolbars = {};
+		});
+	}
+
+	/**
 	 * Renders the inline editor UI.
 	 *
 	 * @return {Object} Name/value object with theme data.
 	 */
-	function renderInlineUI() {
+	function renderInlineUI(args) {
 		var panel, inlineToolbarContainer;
 
 		if (settings.fixed_toolbar_container) {
@@ -340,7 +603,18 @@ tinymce.ThemeManager.add('modern', function(editor) {
 
 		function reposition() {
 			if (panel && panel.moveRel && panel.visible() && !panel._fixed) {
-				panel.moveRel(editor.getBody(), ['tl-bl', 'bl-tl']);
+				// TODO: This is kind of ugly and doesn't handle multiple scrollable elements
+				var scrollContainer = editor.selection.getScrollContainer(), body = editor.getBody();
+				var deltaX = 0, deltaY = 0;
+
+				if (scrollContainer) {
+					var bodyPos = DOM.getPos(body), scrollContainerPos = DOM.getPos(scrollContainer);
+
+					deltaX = Math.max(0, scrollContainerPos.x - bodyPos.x);
+					deltaY = Math.max(0, scrollContainerPos.y - bodyPos.y);
+				}
+
+				panel.fixed(false).moveRel(body, editor.rtl ? ['tr-br', 'br-tr'] : ['tl-bl', 'bl-tl', 'tr-br']).moveBy(deltaX, deltaY);
 			}
 		}
 
@@ -354,12 +628,13 @@ tinymce.ThemeManager.add('modern', function(editor) {
 
 		function hide() {
 			if (panel) {
+				// We require two events as the inline float panel based toolbar does not have autohide=true
 				panel.hide();
-				DOM.removeClass(editor.getBody(), 'mce-edit-focus');
 
-				if (document.activeElement && document.activeElement.className.indexOf('mce-content-body') == -1) {
-					DOM.setStyle(document.body, 'padding-top', 0);
-				}
+				// All other autohidden float panels will be closed below.
+				FloatPanel.hideAll();
+
+				DOM.removeClass(editor.getBody(), 'mce-edit-focus');
 			}
 		}
 
@@ -375,16 +650,18 @@ tinymce.ThemeManager.add('modern', function(editor) {
 			// Render a plain panel inside the inlineToolbarContainer if it's defined
 			panel = self.panel = Factory.create({
 				type: inlineToolbarContainer ? 'panel' : 'floatpanel',
+				role: 'application',
 				classes: 'tinymce tinymce-inline',
 				layout: 'flex',
 				direction: 'column',
+				align: 'stretch',
 				autohide: false,
 				autofix: true,
 				fixed: !!inlineToolbarContainer,
 				border: 1,
 				items: [
 					settings.menubar === false ? null : {type: 'menubar', border: '0 0 1 0', items: createMenuButtons()},
-					settings.toolbar === false ? null : {type: 'panel', name: 'toolbar', layout: 'stack', items: createToolbars()}
+					createToolbars(settings.toolbar_items_size)
 				]
 			});
 
@@ -395,20 +672,32 @@ tinymce.ThemeManager.add('modern', function(editor) {
 				]});
 			}*/
 
+			editor.fire('BeforeRenderUI');
 			panel.renderTo(inlineToolbarContainer || document.body).reflow();
 
 			addAccessibilityKeys(panel);
 			show();
+			addContextualToolbars();
 
 			editor.on('nodeChange', reposition);
 			editor.on('activate', show);
 			editor.on('deactivate', hide);
+
+			editor.nodeChanged();
 		}
 
 		settings.content_editable = true;
 
-		editor.on('focus', render);
-		editor.on('blur', hide);
+		editor.on('focus', function() {
+			// Render only when the CSS file has been loaded
+			if (args.skinUiCss) {
+				tinymce.DOM.styleSheetLoader.load(args.skinUiCss, render, render);
+			} else {
+				render();
+			}
+		});
+
+		editor.on('blur hide', hide);
 
 		// Remove the panel when the editor is removed
 		editor.on('remove', function() {
@@ -417,6 +706,11 @@ tinymce.ThemeManager.add('modern', function(editor) {
 				panel = null;
 			}
 		});
+
+		// Preload skin css
+		if (args.skinUiCss) {
+			tinymce.DOM.styleSheetLoader.load(args.skinUiCss);
+		}
 
 		return {};
 	}
@@ -430,16 +724,31 @@ tinymce.ThemeManager.add('modern', function(editor) {
 	function renderIframeUI(args) {
 		var panel, resizeHandleCtrl, startSize;
 
+		function switchMode() {
+			return function(e) {
+				if (e.mode == 'readonly') {
+					panel.find('*').disabled(true);
+				} else {
+					panel.find('*').disabled(false);
+				}
+			};
+		}
+
+		if (args.skinUiCss) {
+			tinymce.DOM.loadCSS(args.skinUiCss);
+		}
+
 		// Basic UI layout
 		panel = self.panel = Factory.create({
 			type: 'panel',
+			role: 'application',
 			classes: 'tinymce',
 			style: 'visibility: hidden',
 			layout: 'stack',
 			border: 1,
 			items: [
 				settings.menubar === false ? null : {type: 'menubar', border: '0 0 1 0', items: createMenuButtons()},
-				settings.toolbar === false ? null : {type: 'panel', layout: 'stack', items: createToolbars()},
+				createToolbars(settings.toolbar_items_size),
 				{type: 'panel', name: 'iframe', layout: 'stack', classes: 'edit-area', html: '', border: '1 0 0 0'}
 			]
 		});
@@ -459,20 +768,29 @@ tinymce.ThemeManager.add('modern', function(editor) {
 				},
 
 				onResize: function(e) {
-					resizeTo(startSize.width + e.deltaX, startSize.height + e.deltaY);
+					if (settings.resize == 'both') {
+						resizeTo(startSize.width + e.deltaX, startSize.height + e.deltaY);
+					} else {
+						resizeTo(null, startSize.height + e.deltaY);
+					}
 				}
 			};
 		}
 
 		// Add statusbar if needed
 		if (settings.statusbar !== false) {
-			panel.add({type: 'panel', name: 'statusbar', classes: 'statusbar', layout: 'flow', border: '1 0 0 0', items: [
+			panel.add({type: 'panel', name: 'statusbar', classes: 'statusbar', layout: 'flow', border: '1 0 0 0', ariaRoot: true, items: [
 				{type: 'elementpath'},
 				resizeHandleCtrl
 			]});
 		}
 
-		// Render before the target textarea/div
+		if (settings.readonly) {
+			panel.find('*').disabled(true);
+		}
+
+		editor.fire('BeforeRenderUI');
+		editor.on('SwitchMode', switchMode());
 		panel.renderBefore(args.targetNode).reflow();
 
 		if (settings.width) {
@@ -485,8 +803,9 @@ tinymce.ThemeManager.add('modern', function(editor) {
 			panel = null;
 		});
 
-		// Add accesibility shortkuts
+		// Add accesibility shortcuts
 		addAccessibilityKeys(panel);
+		addContextualToolbars();
 
 		return {
 			iframeContainer: panel.find('#iframe')[0].getEl(),
@@ -504,16 +823,24 @@ tinymce.ThemeManager.add('modern', function(editor) {
 		var skin = settings.skin !== false ? settings.skin || 'lightgray' : false;
 
 		if (skin) {
+			var skinUrl = settings.skin_url;
+
+			if (skinUrl) {
+				skinUrl = editor.documentBaseURI.toAbsolute(skinUrl);
+			} else {
+				skinUrl = tinymce.baseURL + '/skins/' + skin;
+			}
+
 			// Load special skin for IE7
 			// TODO: Remove this when we drop IE7 support
 			if (tinymce.Env.documentMode <= 7) {
-				tinymce.DOM.loadCSS(tinymce.baseURL + '/skins/' + skin + '/skin.ie7.min.css');
+				args.skinUiCss = skinUrl + '/skin.ie7.min.css';
 			} else {
-				tinymce.DOM.loadCSS(tinymce.baseURL + '/skins/' + skin + '/skin.min.css');
+				args.skinUiCss = skinUrl + '/skin.min.css';
 			}
 
 			// Load content.min.css or content.inline.min.css
-			editor.contentCSS.push(tinymce.baseURL + '/skins/' + skin + '/content' + (editor.inline ? '.inline' : '') + '.min.css');
+			editor.contentCSS.push(skinUrl + '/content' + (editor.inline ? '.inline' : '') + '.min.css');
 		}
 
 		// Handle editor setProgressState change
@@ -527,12 +854,10 @@ tinymce.ThemeManager.add('modern', function(editor) {
 			}
 		});
 
-		// Render inline UI
 		if (settings.inline) {
 			return renderInlineUI(args);
 		}
 
-		// Render iframe UI
 		return renderIframeUI(args);
 	};
 

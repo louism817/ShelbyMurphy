@@ -33,5 +33,7 @@ namespace _2_1_2015_WSite.Data
         public DbSet<CommSentTo> CommSentTos { get; set; }
         public DbSet<CommPost> CommPosts { get; set; }
         public DbSet<NLSubscriber> NLSubscribers { get; set; }
+        public DbSet<Element> Elements { get; set; }
+       
     }
 }

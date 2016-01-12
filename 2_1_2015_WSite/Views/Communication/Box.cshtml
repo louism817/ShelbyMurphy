@@ -5,24 +5,24 @@
 }
 
 
-@if(User.IsInRole("Admin"))
+@if(Model.CommType == "Blog Post" && User.IsInRole("Admin"))
 {
     <p>
-        @Html.ActionLink("New Communication", "Create", null, new { @class = "btn btn-primary btn-xs " })
+        @Html.ActionLink("New Blog", "Create", null, new { @class = "btn btn-primary btn-xs " })
     </p>
 }
-else
+else if(Model.CommType == "Announcement" && User.IsInRole("Admin"))
 {
     <p>
-        @Html.ActionLink("New Message", "Create", null, new { @class = "btn btn-primary btn-xs " })
+        @Html.ActionLink("New Announcement", "Create", null, new { @class = "btn btn-primary btn-xs " })
     </p>
 }
 
 
-    @if (Model.CreatedComms.Count > 0)
+    @if (Model.Comms.Count > 0)
     {
-        <div class="row box box-info" style="padding:15px">
-            <h2>Authored Communications</h2>
+        <div class="comm-box-outer">
+            <h2>Drafts</h2>
 
             <table class="table table-condensed" id="authorComms">
                 <thead>
@@ -33,139 +33,53 @@ else
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.CreatedComms)
+                    @foreach (var item in Model.Comms)
                     {
-                        <tr>
-                            <td class="col-xs-3">
-                                @(item.CommunicationTypeDesc)
-                            </td>
-                            <td class="col-xs-6">
-                                @(item.MessageLead)
-                                <!--                        @Html.Raw(item.Message) -->
-                            </td>
-                            <td class="col-xs-3">
-                                @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
-                                @Html.ActionLink("Edit", "Edit", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
-                                @if (item.CommunicationTypeDesc == "Email" || item.CommunicationTypeDesc == "Online Chat Message")
-                                {
-                                    @Html.ActionLink("Send", "Send", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
-                                }
-                                else
-                                {
-                                    @Html.ActionLink("Post", "PostComm", new { id = item.CommunicationId, creatorId = item.CreatedById }, new { @class = "btn btn-default btn-xs " })
-                                }
-                                @Html.ActionLink("Delete", "Delete", new { id = item.CommunicationId }, new { @class = "btn btn-danger btn-xs " })
-                            </td>
-                        </tr>
+                    if (item.CommunicationTypeDesc == Model.CommType 
+                            && ((Model.CommType == "Blog Post" && !item.Published) 
+                                ||(Model.CommType == "Announcement" && (item.PubDate > DateTime.Today || item.UnPubDate < DateTime.Today))))
+                        {
+                            <tr>
+                                <td class="col-md-3">
+                                    @(item.CommunicationTypeDesc)
+                                </td>
+                                <td class="col-md-6">
+                                    @(item.MessageLead)
+                                    <!--                        @Html.Raw(item.Message) -->
+                                </td>
+                                <td class="col-md-3">
+                                    @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
+                                    @if (item.CommunicationTypeDesc == "Email" || item.CommunicationTypeDesc == "Online Chat Message")
+                                    {
+                                        @Html.ActionLink("Send", "Send", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
+                                    }
+                                    else if (item.CommunicationTypeDesc == "Blog Post")
+                                    {
+                                        @Html.ActionLink("Post", "ToggleCommunicationPosting", new { id = item.CommunicationId, creatorId = item.CreatedById }, new { @class = "btn btn-default btn-xs " })
+                                    }
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.CommunicationId }, new { @class = "btn btn-danger btn-xs " })
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
         </div>
     }
 
-
-
-    @if (Model.SentComms.Count > 0)
+    @if (Model.Comms.Count > 0)
     {
-        <div class="row box box-info" style="padding:15px">
-            <h2>Sent Communications</h2>
-            <table class="table table-condensed" id="sentComms">
-                <thead>
-                    <tr>
-                        <th>Communication Type</th>
-                        <th>Message</th>
-                        <th>Sent To</th>
-                        <th>Sent On</th>
-                        <th>Operations</th>
-                    </tr>
-                </thead>
+        <div class="comm-box-outer">
+            @if (Model.CommType == "Blog Post")
+            {
+                <h2>Posted Communications</h2>
+            }
+            else if (Model.CommType == "Announcement")
+            {
+                <h2>Current Announcements</h2>
+            }
 
-                <tbody>
-                    @foreach (var item in Model.SentComms)
-                    {
-                        <tr>
-                            <td class="col-xs-2">
-                                @(item.CommunicationTypeDesc)
-                            </td>
-                            <td class="col-xs-3">
-                                @(item.MessageLead)
-                                <!--                        @Html.Raw(item.Message) -->
-                            </td>
-                            <td class="col-xs-3">
-                                @if (item.ImgUrl != null && item.ImgUrl != "")
-                                {
-                                    <img src="@(item.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
-                                }
-                                @(item.SentToName)
-
-                            </td>
-                            <td class="col-xs-2">
-                                @(item.DatePosted)
-                            </td>
-                            <td class="col-xs-2">
-                                @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-
-
-
-    @if (Model.ReceivedComms.Count > 0)
-    {
-        <div class="row box box-info" style="padding:15px">
-            <h2>Received Communications</h2>
-            <table class="table table-condensed" id="receivedComms">
-                <thead>
-                    <tr>
-                        <th>Communication Type</th>
-                        <th>Message</th>
-                        <th>Recieved From</th>
-                        <th>Recieved On</th>
-                        <th>Operations</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var item in Model.ReceivedComms)
-                    {
-                        <tr>
-                            <td class="col-xs-2">
-                                @(item.CommunicationTypeDesc)
-                            </td>
-                            <td class="col-xs-3">
-                                @(item.MessageLead)
-                                <!--                        @Html.Raw(item.Message) -->
-                            </td>
-                            <td class="col-xs-3">
-                                @if (item.ImgUrl != null && item.ImgUrl != "")
-                                {
-                                    <img src="@(item.ImgUrl)" class="img-circle" alt="No Image Available" style="width: 50px; height: 50px;" />
-                                }
-                                @(item.CreatedByName)
-                            </td>
-                            <td class="col-xs-2">
-                                @(item.DatePosted)
-                            </td>
-                            <td class="col-xs-2">
-                                @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-
-
-
-    @if (Model.PostedComms.Count > 0)
-    {
-        <div class="row box box-info" style="padding:15px">
-            <h2>Posted Communications</h2>
             <table class="table table-condensed" id="postedComms">
                 <thead>
                     <tr>
@@ -176,23 +90,36 @@ else
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.PostedComms)
+                    @foreach (var item in Model.Comms)
                     {
+                        if (item.CommunicationTypeDesc == Model.CommType
+                            && ((Model.CommType == "Blog Post" && item.Published)
+                                || (Model.CommType == "Announcement" && (item.PubDate <= DateTime.Today && item.UnPubDate >= DateTime.Today))))
+                        {
                         <tr>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @(item.CommunicationTypeDesc)
                             </td>
-                            <td class="col-xs-6">
+                            <td class="col-md-6">
                                 @(item.MessageLead)
                                 <!--                        @Html.Raw(item.Message) -->
                             </td>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @(item.DatePosted)
                             </td>
-                            <td class="col-xs-2">
+                            <td class="col-md-2">
                                 @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
+                                @if (Model.CommType == "Blog Post")
+                                {
+                                    @Html.ActionLink("Unpost", "ToggleCommunicationPosting", new { id = item.CommunicationId, creatorId = item.CreatedById }, new { @class = "btn btn-default btn-xs " })
+                                }
+                                else if (Model.CommType == "Announcement")
+                                {
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
+                                }
                            </td>
                         </tr>
+                        }
                     }
                 </tbody>
             </table>
@@ -202,9 +129,7 @@ else
 
 <script>
     $(function () {
-        $('#authorComms').dataTable();
-        $('#receivedComms').dataTable();
-        $('#sentComms').dataTable();
-        $('#postedComms').dataTable();
+        $('#authorComms').dataTable({ "lengthMenu": [5, 10, 15, 25] });
+        $('#postedComms').dataTable({ "lengthMenu": [5, 10, 15, 25] });
     });
 </script>

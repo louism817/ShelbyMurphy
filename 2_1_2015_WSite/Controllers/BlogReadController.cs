@@ -25,7 +25,7 @@ namespace _2_1_2015_WSite.Controllers
 
         public ActionResult Index()        
         {
-            List<BlogAngularViewModel> model = _adapter.GetBlogPostsForAngular();
+            List<BlogViewModel> model = _adapter.GetBlogPosts();
             
             return Json(model, JsonRequestBehavior.AllowGet);
         }

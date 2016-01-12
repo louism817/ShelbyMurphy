@@ -2,49 +2,68 @@
 @{
     ViewBag.Title = "AddUpdateUser";
 }
-
-<center>
-    <div class="box box-info" style="padding: 15px; width:40%; margin:25px">
+<script src="~/fileman/js/custom.js"></script>
+<div class="row form-horizontal">
+    <div class="col-md-offset-3 col-md-6 col-md-offset-3 box-outer">
         <h2>Update/Create User</h2>
         @using (Html.BeginForm())
         {
 
             <div class="form-group">
-                @Html.LabelFor(u => u.FirstName)
-                @Html.TextBoxFor(u => u.FirstName, new { @class = "form-control" })
+                @Html.LabelFor(u => u.FirstName, new { @class = "col-md-2 form-label-right" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(u => u.FirstName, new { @class = "form-control col-md-10" })
+                </div>
             </div>
 
 
             <div class="form-group">
-                @Html.LabelFor(u => u.LastName)
-                @Html.TextBoxFor(u => u.LastName, new { @class = "form-control" })
+                @Html.LabelFor(u => u.LastName, new { @class = "col-md-2 form-label-right" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(u => u.LastName, new { @class = "form-control" })
+                </div>
             </div>
 
-            <div class="form-group">
-                @Html.LabelFor(u => u.DisplayName)
-                @Html.TextBoxFor(u => u.DisplayName, new { @class = "form-control" })
+            <div class="form-group bottom-margin">
+                @Html.LabelFor(u => u.DisplayName, new { @class = "col-md-2 form-label-right" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(u => u.DisplayName, new { @class = "form-control" })
+                </div>
             </div>
 
-            <div class="form-group">
-                @Html.LabelFor(u => u.Email)
-                @Html.TextBoxFor(u => u.Email, new { @class = "form-control" })
+            <div class="form-group bottom-margin">
+                @Html.LabelFor(u => u.Email, new { @class = "col-md-2 form-label-right" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(u => u.Email, new { @class = "form-control" })
+                </div>
             </div>
-
-            <div class="form-group">
-                @Html.LabelFor(u => u.ImgUrl)
-                @Html.TextBoxFor(u => u.ImgUrl, new { @class = "form-control" })
+            <div class="form-group bottom-margin date-pub-box">
+                @Html.LabelFor(u => u.ImgUrl, new { @class = "col-md-2 form-label-right" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(u => u.ImgUrl, new { @class = "form-control", @id = "userImage", @onclick = "openCustomRoxySelect()" })
+                   @* <input type="text" id="userImage" readonly="readonly" onfocus="this.blur()" style="border:1px solid #ccc;cursor:pointer;padding:4px;width:80%;" value="@Model.ImgUrl" onclick="openCustomRoxySelect()">*@
+                    <div id="roxyCustomPanel2" class="date-pub-box" style="display: none;">                        
+                        <iframe src="/fileman/index.html?integration=custom&type=image&txtFieldId=userImage" style="width:100%;height:100%" frameborder="0"></iframe>
+                    </div>
+                </div>
             </div>
 
             if (@Model.UserId != null)
             {
                 <div class="form-group">
-                    @Html.DropDownListFor(u => u.Role, new SelectList(Model.Roles, null, null), Model.Role, new { @class = "form-control" })
+                    @Html.LabelFor(u => u.Role, new { @class = "col-md-2 form-label-right" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(u => u.Role, new SelectList(Model.Roles, null, null), Model.Role, new { @class = "form-control" })
+                    </div>
                 </div>
             }
             else
             {
                 <div class="form-group">
-                    @Html.DropDownListFor(u => u.Role, new SelectList(Model.Roles, null, null), "--Select Role--", new { @class = "form-control" })
+                    @Html.LabelFor(u => u.Role, new { @class = "col-md-2 form-label-right" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(u => u.Role, new SelectList(Model.Roles, null, null), "--Select Role--", new {@class = "form-control" })
+                    </div>
                 </div>
             }
 
@@ -56,8 +75,12 @@
         {
             if (@Model.AssignedCoach.DisplayName != null)
             {
-                @Html.LabelFor(c => c.AssignedCoach)<br />
-                @Html.TextBoxFor(c => c.AssignedCoach.DisplayName, new { @class = "form-control", @readonly = "readonly" })
+                <div class="form-group">
+                    @Html.LabelFor(c => c.AssignedCoach, new { @class = "col-md-2 form-label-right" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(c => c.AssignedCoach.DisplayName, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
             }
 
             if (@Model.AssignedCoach.DisplayName == null)
@@ -66,19 +89,35 @@
 
                 using (Html.BeginForm("AssignCoach", "User", FormMethod.Post, new { @id = "assignCoachForm" }))
                 {
-                    <div class="form-group">
+                <div class="form-group">
+                    @Html.LabelFor(c => c.AssignedCoach, new { @class = "col-md-2 form-label-right" })
+                    <div class="col-md-10">
                         @Html.DropDownListFor(c => c.AssignCoachId, new SelectList(Model.Coaches, "UserId", "DisplayName"), "- Select Coach -", new { @class = "form-control" })
                     </div>
+                    </div>
 
-                    <input type="hidden" value="@Model.UserId" name="userId" />
-                    <input type="submit" class="btn btn-info" value="Assign Coach" />
+                <input type="hidden" value="@Model.UserId" name="userId" />
+                <input type="submit" class="btn btn-info" value="Assign Coach" />
                 }
             }
         }
 
 
     </div>
-</center>
+</div>
+
+<script>
+function openCustomRoxySelect() {
+    $('#roxyCustomPanel2').addClass("date-pub-box");
+    $('#roxyCustomPanel2').dialog({ modal: true, width: 875, height: 400 });
+    
+}
+function closeCustomRoxy2() {
+    $('#roxyCustomPanel2').removeClass("date-pub-box");
+    $('#roxyCustomPanel2').dialog('close');
+}
+</script>
+
 
 
 

@@ -1,24 +1,15 @@
-﻿@{
+﻿@model _2_1_2015_WSite.Models.ElementViewModel
+@{
     ViewBag.Title = "Contact";
 }
-<link href="~/Content/Site.css" rel="stylesheet" />
-<center>
-    <div class="row box box-info" style="padding:15px; margin: 30px; width: 45%">
-        <h2>@ViewBag.Title.</h2>
-        <h3>@ViewBag.Message</h3>
-        <address>
-            11315 Morning Glory Trail<br />
-            Austin, TX 78750<br />
-            <abbr title="Phone">P:</abbr>
-            817-776-1121
-        </address>
 
-        <address>
-            <strong>Need Help:</strong>   <a href="mailto:shelby@shelbymurpy.com">Shelby@ShelbyMurphy.com</a>
-        </address>
-
-    </div>
-
-</center>
-
+<div class="row">
+    <div class="box-outer col-md-offset-2 col-md-8 col-md-offset-2">
+            <div class="box-info">
+            <div>
+                @Html.Raw(Model.ElementBody)
+            </div>
+        </div>
+     </div>
+</div>
 
