@@ -35,7 +35,6 @@
 
 .box-outer, .comm-box-outer {
     background-color: #fff;
-    border-radius: 10px;
     margin-bottom: 10px;
     padding: 10px;
     padding-bottom: 20px;
@@ -59,6 +58,11 @@
     border-radius: 10px;
     margin: 0 10px 20px 0;
     
+}
+
+.blog-post {
+    border: 3px solid #d7d7d7;
+    padding: 15px;
 }
 
 .blog-author img {
@@ -132,7 +136,8 @@
 }
 
 .blog-table > tbody > tr > td {
-    padding: 0;
+    padding: 15px;
+    background: #fff;
 }
 
 .ch-charity {
