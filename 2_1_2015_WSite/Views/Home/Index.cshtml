@@ -11,32 +11,35 @@
         @*</div>*@
         @Html.Action("Announcements", "Communication")
         <div>
-            <table class="table blog-table" id="blogs">
-                <thead><tr><th></th></tr></thead>
-                <tbody>
-                    @foreach (var blog in Model)
-                    {
-                        <tr>
-                            <td>
-                                <div class="box-outer">
-                                    <div class="blog-author">
-                                        <center>
-                                            <p style="align-content: center"><b> @blog.CreatedByName</b></p>
-                                            <img src="@blog.ImgUrl" /><br />
-                                        </center>
+            @if (@Model.Count > 0)
+            {
+                <table class="table blog-table" id="blogs">
+                    <thead><tr><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var blog in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="blog-post">
+                                        @*<div class="blog-author">
+                                                <center>
+                                                    <p style="align-content: center"><b> @blog.CreatedByName</b></p>
+                                                    <img src="@blog.ImgUrl" /><br />
+                                                </center>
+                                            </div>*@
+                                        <div>
+                                            <h3><u>@blog.MessageTitle</u></h3>
+                                            <h5>Posted By: @blog.CreatedByName on @blog.DatePostedString </h5>
+                                            <a href="/Communication/BlogDetail?id=@(blog.BlogId)"><h4>@Html.Raw(blog.MessageLead)</h4></a>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3><u>@blog.MessageTitle</u></h3>
-                                        <h5>Posted: @blog.DatePostedString </h5>
-                                        <a href="/Communication/BlogDetail?id=@(blog.BlogId)"><h4>@Html.Raw(blog.MessageLead)</h4></a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
 
-                    }
-                </tbody>
-            </table>
+                        }
+                    </tbody>
+                </table>
+            }
 
             @* <h2>Hi, I’m Shelby. I’m a coach, writer, entrepreneur. I help people get their shit together. Some people say my work radically changed their lives. Others dabble in my ideas and then go on to find something else. Either way, welcome!</h2>*@
 
