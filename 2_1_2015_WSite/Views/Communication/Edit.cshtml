@@ -18,22 +18,15 @@
                 <div class="form-group">
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                    @if (Model.CommunicationTypeDesc == "Blog Post")
-                    {
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.MessageTitle)<br />
-                            @Html.TextBoxFor(model => model.MessageTitle, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.MessageTitle, "", new { @class = "text-danger" })
-                        </div>
+                   
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.MessageTitle)<br />
+                        @Html.TextBoxFor(model => model.MessageTitle, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.MessageTitle, "", new { @class = "text-danger" })
+                    </div>
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.MessageLead)<br />
-                            @Html.TextBoxFor(model => model.MessageLead, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.MessageLead, "", new { @class = "text-danger" })
-
-                        </div>
-                    }
-                    else if (Model.CommunicationTypeDesc == "Announcement")
+                    
+                   @if (Model.CommunicationTypeDesc == "Announcement")
                     {
                         <div class="form-group date-pub-box">
                             @Html.LabelFor(model => model.PubDate)
@@ -54,6 +47,10 @@
                             @Html.ValidationMessageFor(model => model.CommunicationTypeId, "", new { @class = "text-danger" })
                         </div>
                     }
+
+                    <div class="form-group">
+                       @Html.TextBoxFor(model => model.CommunicationTypeDesc, new { @class = "form-control hidden" })
+                    </div>
  
                     <div class="form-group">
                         <input type="submit" value="Update" class="btn btn-default" />

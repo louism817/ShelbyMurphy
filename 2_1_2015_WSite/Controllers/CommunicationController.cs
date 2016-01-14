@@ -124,7 +124,8 @@ namespace _2_1_2015_WSite.Controllers
         public ActionResult Edit(CommunicationViewModel model, int id=0)
         {
             _adapter.UpdateCommunication(model, id);
-            return RedirectToAction("Index");
+
+            return RedirectToAction("Box", new { box = model.CommunicationTypeDesc });
         }
 
         // When we add scheduling/tracking all of the scheduling/tracking history will need to be removed.

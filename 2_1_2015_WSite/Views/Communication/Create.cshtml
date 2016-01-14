@@ -21,22 +21,13 @@
 
                             <div class="form-group">
                                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                                @if (Model.CommunicationTypeDesc == "Blog Post")
-                                {
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.MessageTitle)<br />
-                                        @Html.TextBoxFor(model => model.MessageTitle, new { @class = "form-control" })
-                                        @Html.ValidationMessageFor(model => model.MessageTitle, "", new { @class = "text-danger" })
-                                    </div>
-
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.MessageLead)<br />
-                                        @Html.TextBoxFor(model => model.MessageLead, new { @class = "form-control" })
-                                        @Html.ValidationMessageFor(model => model.MessageLead, "", new { @class = "text-danger" })
-                                    </div>
-                                }
-                                
+                                                                
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.MessageTitle)<br />
+                                    @Html.TextBoxFor(model => model.MessageTitle, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.MessageTitle, "", new { @class = "text-danger" })
+                                </div>
+                                                                
                                <div class="form-group">                                   
                                     @Html.DropDownListFor(model => model.CommunicationTypeId, new SelectList(Model.CommunicationTypes, "CommunicationTypeId", "CommunicationTypeDesc"), "-Select Communication Type-", new { @class = "form-control hidden" })
                                     @Html.ValidationMessageFor(model => model.CommunicationTypeId, "", new { @class = "text-danger" })

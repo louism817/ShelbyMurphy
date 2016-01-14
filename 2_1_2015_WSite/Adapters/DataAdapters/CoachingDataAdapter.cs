@@ -792,7 +792,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
             a tag that we get the rest of the tag (assumming that the tag is img or formatting text).
 
             */
-            const int previewLen = 100;
+            const int previewLen = 300;
             var teaser = "";
             try
             {

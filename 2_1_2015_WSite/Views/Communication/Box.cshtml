@@ -28,7 +28,7 @@ else if(Model.CommType == "Announcement" && User.IsInRole("Admin"))
                 <thead>
                     <tr>
                         <th>Communication Type</th>
-                        <th>Message Description</th>
+                        <th>Title</th>
                         <th>Operations</th>
                     </tr>
                 </thead>
@@ -44,8 +44,7 @@ else if(Model.CommType == "Announcement" && User.IsInRole("Admin"))
                                     @(item.CommunicationTypeDesc)
                                 </td>
                                 <td class="col-md-6">
-                                    @(item.MessageLead)
-                                    <!--                        @Html.Raw(item.Message) -->
+                                    @(item.MessageTitle)
                                 </td>
                                 <td class="col-md-3">
                                     @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
@@ -84,8 +83,16 @@ else if(Model.CommType == "Announcement" && User.IsInRole("Admin"))
                 <thead>
                     <tr>
                         <th>Communication Type</th>
-                        <th>Message</th>
-                        <th>Posted On</th>
+                        <th>Title</th>
+                        @if (Model.CommType == "Announcement")
+                        {
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                        }
+                        else
+                        {
+                            <th>Posted On</th>
+                        }
                         <th>Operations</th>
                     </tr>
                 </thead>
@@ -100,13 +107,33 @@ else if(Model.CommType == "Announcement" && User.IsInRole("Admin"))
                             <td class="col-md-2">
                                 @(item.CommunicationTypeDesc)
                             </td>
-                            <td class="col-md-6">
-                                @(item.MessageLead)
-                                <!--                        @Html.Raw(item.Message) -->
-                            </td>
-                            <td class="col-md-2">
-                                @(item.DatePosted)
-                            </td>
+                            @if (Model.CommType == "Announcement")
+                            {
+                                <td class="col-md-4">
+                                    @(item.MessageTitle)
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="col-md-6">
+                                    @(item.MessageTitle)
+                                </td>
+                            }
+                            
+                            @if (Model.CommType == "Announcement")
+                            {
+                                <td class="col-md-2">
+                                    @(item.PubDate)
+                                </td>
+                                <td class="col-md-2">
+                                    @(item.UnPubDate)
+                                </td>
+                            }
+                            else {
+                                <td class="col-md-2">
+                                    @(item.DatePosted)
+                                </td>
+                            }
                             <td class="col-md-2">
                                 @Html.ActionLink("View", "Details", new { id = item.CommunicationId }, new { @class = "btn btn-default btn-xs " })
                                 @if (Model.CommType == "Blog Post")
