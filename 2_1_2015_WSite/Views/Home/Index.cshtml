@@ -21,29 +21,19 @@
                             <tr>
                                 <td>
                                     <div class="blog-post">
-                                        @*<div class="blog-author">
-                                                <center>
-                                                    <p style="align-content: center"><b> @blog.CreatedByName</b></p>
-                                                    <img src="@blog.ImgUrl" /><br />
-                                                </center>
-                                            </div>*@
                                         <div>
-                                            <h3><u>@blog.MessageTitle</u></h3>
+                                            <a href="/Communication/BlogDetail?id=@(blog.BlogId)"><h3><u>@blog.MessageTitle</u></h3></a>
                                             <h5>Posted By: @blog.CreatedByName on @blog.DatePostedString </h5>
                                             <a href="/Communication/BlogDetail?id=@(blog.BlogId)"><h4>@Html.Raw(blog.MessageLead)</h4></a>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-
                         }
                     </tbody>
                 </table>
             }
 
-            @* <h2>Hi, I’m Shelby. I’m a coach, writer, entrepreneur. I help people get their shit together. Some people say my work radically changed their lives. Others dabble in my ideas and then go on to find something else. Either way, welcome!</h2>*@
-
-           
         </div>
     </div>   
 
@@ -76,7 +66,8 @@
  <script>
     $(function () {
         $('#blogs').dataTable({
-            "lengthMenu": [5, 10, 15, 25]
+            "lengthMenu": [5, 10, 15, 25],
+            "order": [["DatePosted", "desc"]]
         }).removeClass("dataTable");
     });
 </script> 

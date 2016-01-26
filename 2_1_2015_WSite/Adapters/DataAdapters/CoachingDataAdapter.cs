@@ -930,7 +930,7 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
                     CreatedByName = c.Creator.DisplayName,
                     DatePosted = c.DatePosted,
                     ImgUrl = c.Creator.ImgUrl
-                }).ToList();
+                }).OrderByDescending(c => c.DatePosted).ToList();
             }
             foreach (BlogViewModel c in model)
             {
@@ -1306,22 +1306,23 @@ namespace _2_1_2015_WSite.Adapters.DataAdapters
         {
             using (ApplicationDbContext db = new ApplicationDbContext())
             {
-                Communication newComm = new Communication
-                {
-                    DateCreated = DateTime.Now,
-                    DateLastEdited = DateTime.Now,
-                    DatePosted = DateTime.Now,
-                    CommunicationTypeId = model.CommunicationTypeId,
-                    Message = model.Message,
-                    CreatorId = GetUserIdFromName(userName),
-                    MessageLead = model.MessageLead,
-                    MessageTitle = model.MessageTitle,
-                    PubDate = model.PubDate.Value,
-                    UnPubDate = model.UnPubDate
-                };
-                db.Communications.Add(newComm);
                 try
                 {
+                    Communication newComm = new Communication
+                    {
+                        DateCreated = DateTime.Now,
+                        DateLastEdited = DateTime.Now,
+                        DatePosted = DateTime.Now,
+                        CommunicationTypeId = model.CommunicationTypeId,
+                        Message = model.Message,
+                        CreatorId = GetUserIdFromName(userName),
+                        MessageLead = model.MessageLead,
+                        MessageTitle = model.MessageTitle,
+                        PubDate = (model.PubDate != null) ? model.PubDate.Value : model.PubDate,
+                        UnPubDate = (model.UnPubDate != null) ? model.UnPubDate.Value : model.UnPubDate,
+                        Deleted = false
+                    };
+                    db.Communications.Add(newComm);
                     db.SaveChanges();
                 }
                 catch(Exception ex)
